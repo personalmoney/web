@@ -23,6 +23,14 @@ export class TagState {
         return state.data;
     }
 
+    @Selector()
+    static getSortedData(state: TagStateModel) {
+        if (state.data) {
+            return [...state.data].sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        return state.data;
+    }
+
     @Action(GetTags)
     get({ getState, setState }: StateContext<TagStateModel>) {
 
