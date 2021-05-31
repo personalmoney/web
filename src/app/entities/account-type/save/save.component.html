@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Account Type</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-content class="ion-padding">
+    <form [formGroup]="form"
+          (ngSubmit)="create()"
+          novalidate>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Name</ion-label>
+        <ion-input formControlName="name"
+                   type="text"
+                   required></ion-input>
+      </ion-item>
+
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.name.errors?.remoteError">
+        {{controls.name.errors.remoteError}}
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.name.errors?.required">
+        Name is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.name.errors?.minlength">
+        Name should be min 2 chars long.
+      </span>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Icon</ion-label>
+        <ionic-selectable #iconComponent
+                          formControlName="icon"
+                          [items]="filteredIcons"
+                          itemValueField="name"
+                          itemTextField="name"
+                          [canSearch]="true"
+                          [hasInfiniteScroll]="true"
+                          (onSearch)="searchIcons($event)"
+                          (onInfiniteScroll)="getMoreIcons($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="iconComponent.close()">
+              </ion-icon>
+              <ion-title>
+                Select Icon
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+          <ng-template ionicSelectableItemTemplate
+                       let-icon="item"
+                       let-isIconSelected="isItemSelected">
+            <fa-icon color="dark"
+                     [icon]="[icon.prefix, icon.name]"></fa-icon>
+            {{icon.name}}
+          </ng-template>
+          <ng-template ionicSelectableValueTemplate
+                       let-icon="value">
+            <fa-icon color="dark"
+                     [icon]="[icon.prefix, icon.name]"></fa-icon>
+            {{icon.name}}
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.icon.errors?.required">
+        Icon is required.
+      </span>
+
+      <ion-row>
+        <ion-col>
+          <ion-button type="button"
+                      size="small"
+                      color="light"
+                      (click)="close()"
+                      expand="block">Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button type="submit"
+                      size="small"
+                      expand="block">Submit</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-content>
+
+</ion-content>

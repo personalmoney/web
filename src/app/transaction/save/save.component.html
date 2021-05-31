@@ -1,0 +1,259 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/transactions"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? "Edit Transaction":"New Transaction"}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon class="close-button"
+                (click)="save()"
+                name="checkmark-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-content class="ion-padding">
+    <form [formGroup]="form"
+          (ngSubmit)="save()">
+
+      <ion-item lines="full">
+        <ion-label>Type</ion-label>
+        <ion-icon class="type deposit"
+                  [ngClass]="this.form.controls.type.value===1?'active':'in-active'"
+                  (click)="selectType(1)"
+                  name="add-circle-outline"></ion-icon>
+        <ion-icon class="type withdraw"
+                  [ngClass]="this.form.controls.type.value===2?'active':'in-active'"
+                  (click)="selectType(2)"
+                  name="remove-circle-outline"></ion-icon>
+        <ion-icon class="type transfer"
+                  [ngClass]="this.form.controls.type.value===3?'active':'in-active'"
+                  (click)="selectType(3)"
+                  name="arrow-redo-outline"></ion-icon>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Date</ion-label>
+        <ion-input formControlName="date"
+                   placeholder="Enter date"
+                   type="date"></ion-input>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.date.errors?.required">
+        Date is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.date.errors?.remoteError">
+        {{controls.date.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full">
+        <ion-label position="floating"> <span *ngIf="this.form.controls.type.value===3">From</span> Account</ion-label>
+        <ionic-selectable #accountComponent
+                          formControlName="account"
+                          [items]="accounts"
+                          placeholder="Select account"
+                          itemValueField="id"
+                          itemTextField="name"
+                          [canSearch]="false">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="accountComponent.close()"
+                        style="font-size: 24px;"></ion-icon>
+              <ion-title>
+                Select Account
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.account.errors?.required">
+        Account is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.account.errors?.remoteError">
+        {{controls.account.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value===3">
+        <ion-label position="floating">To Account</ion-label>
+        <ionic-selectable #toAccountComponent
+                          formControlName="toAccount"
+                          [items]="accounts"
+                          [required]=" this.form.controls.type.value===3"
+                          placeholder="Select account"
+                          itemValueField="id"
+                          itemTextField="name"
+                          [canSearch]="false">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="toAccountComponent.close()"
+                        style="font-size: 24px;"></ion-icon>
+              <ion-title>
+                Select Account
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.toAccount.errors?.required">
+        Account is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.toAccount.errors?.remoteError">
+        {{controls.toAccount.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Amount</ion-label>
+        <ion-input formControlName="amount"
+                   placeholder="Enter amount"
+                   type="number"></ion-input>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.amount.errors?.required">
+        Amount is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.amount.errors?.remoteError">
+        {{controls.amount.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value!==3">
+        <ion-label position="floating">Category</ion-label>
+        <ionic-selectable #categoryComponent
+                          formControlName="category"
+                          [items]="filteredCategories"
+                          placeholder="Select category"
+                          itemValueField="id"
+                          itemTextField="name"
+                          groupValueField="categoryId"
+                          groupTextField="categoryName"
+                          [canSearch]="true"
+                          (onSearch)="searchCategories($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="categoryComponent.close()">
+              </ion-icon>
+              <ion-title>
+                Select Category
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+          <ng-template ionicSelectableGroupTemplate
+                       let-group="group">
+            <span class="cat-group">{{group.text}}</span>
+          </ng-template>
+          <ng-template ionicSelectableValueTemplate
+                       let-category="value">
+            {{category.categoryName}} / {{category.name}}
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.category.errors?.required">
+        Category is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.category.errors?.remoteError">
+        {{controls.category.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value!==3">
+        <ion-label position="floating">Payee</ion-label>
+        <ionic-selectable #payeeComponent
+                          formControlName="payee"
+                          [items]="filteredPayees"
+                          placeholder="Select payee"
+                          itemValueField="id"
+                          itemTextField="name"
+                          [canSearch]="true"
+                          (onSearch)="searchPayees($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="payeeComponent.close()"
+                        style="font-size: 24px;"></ion-icon>
+              <ion-title>
+                Select Payee
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.payee.errors?.required">
+        Payee is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.payee.errors?.remoteError">
+        {{controls.payee.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value!==3">
+        <ion-label position="floating">Tags</ion-label>
+        <ionic-selectable #tagComponent
+                          formControlName="tags"
+                          [items]="filteredTags"
+                          [isMultiple]="true"
+                          placeholder="Select tag(s)"
+                          itemValueField="id"
+                          itemTextField="name"
+                          [canSearch]="true"
+                          (onSearch)="searchTags($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="tagComponent.close()">
+              </ion-icon>
+              <ion-title>
+                Select Tags
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+          <ng-template ionicSelectableValueTemplate
+                       let-tags="value">
+            <span *ngFor="let tag of tags;index as i">{{ tag.name }}<span *ngIf="i<(tags.length-1)">, </span></span>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.tags.errors?.remoteError">
+        {{controls.tags.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full">
+        <ion-label position="floating">Notes</ion-label>
+        <ion-textarea formControlName="notes"
+                      placeholder="Enter notes"></ion-textarea>
+      </ion-item>
+
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && errors">
+        <span *ngFor="let error of errors">
+          {{error.name}} : {{error.error}}
+        </span>
+      </span>
+    </form>
+  </ion-content>
+</ion-content>

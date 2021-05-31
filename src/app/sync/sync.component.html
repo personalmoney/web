@@ -1,0 +1,16 @@
+<ion-fab *ngIf="!isWeb"
+         vertical="top"
+         horizontal="end"
+         slot="fixed">
+
+  <ion-icon *ngIf="!isSyncing"
+            size="default"
+            (click)="sync()"
+            name="sync-outline"></ion-icon>
+
+  <i *ngIf="isSyncing"
+     class="icon">
+    <ion-spinner></ion-spinner>
+  </i>
+
+</ion-fab>

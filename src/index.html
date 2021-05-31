@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="utf-8" />
+      <title>Personal Money</title>
+
+      <base href="/" />
+
+      <meta name="color-scheme"
+            content="light dark" />
+      <meta name="viewport"
+            content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      <meta name="format-detection"
+            content="telephone=no" />
+      <meta name="msapplication-tap-highlight"
+            content="no" />
+      <meta name="google-signin-client_id"
+            content="">
+
+      <link rel="icon"
+            type="image/png"
+            href="assets/icon/favicon.png" />
+
+      <!-- add to homescreen for ios -->
+      <meta name="apple-mobile-web-app-capable"
+            content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style"
+            content="black" />
+</head>
+
+<body>
+      <app-root></app-root>
+      <script>
+            try {
+                  if (
+                        process &&
+                        typeof process.versions.electron === 'string' &&
+                        process.versions.hasOwnProperty('electron')
+                  ) {
+                        const sqlite3 = require('sqlite3');
+                        const fs = require('fs');
+                        const path = require('path');
+                        const homeDir = require('os').homedir();
+                        window.sqlite3 = sqlite3;
+                        window.fs = fs;
+                        window.path = path;
+                        window.appName = 'PersonalMoney';
+                        window.homeDir = homeDir;
+                  }
+            } catch {
+                  console.log("process doesn't exists");
+            }
+      </script>
+</body>
+
+</html>

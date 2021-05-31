@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/entities"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Categories</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12"
+               size-md="6"
+               size-lg="6"
+               *ngFor="let category of (categories$ | async)">
+        <ion-item>
+          <ion-grid>
+            <ion-row>
+              <ion-col size="7.5"
+                       (click)="select(category)"
+                       id="header">
+                <ion-icon *ngIf="!selectedIds.includes(category.id)"
+                          name="chevron-forward-outline"></ion-icon>
+                <ion-icon *ngIf="selectedIds.includes(category.id)"
+                          name="chevron-down-outline"></ion-icon>
+                {{category.name}}
+              </ion-col>
+              <ion-col size="1.5">
+                <ion-icon (click)="createSubCategory(category)"
+                          name="add-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="1.5">
+                <ion-icon (click)="edit(category)"
+                          name="create-outline"></ion-icon>
+              </ion-col>
+              <ion-col size="1.5">
+                <ion-icon (click)="delete(category)"
+                          name="trash-outline"></ion-icon>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="selectedIds.includes(category.id)"
+                     class="ion-padding">
+              <ion-grid>
+                <ion-row>
+                  <ion-col (click)="showOptions($event, subCategory)"
+                           size="12"
+                           *ngFor="let subCategory of category.subCategories">
+                    {{subCategory.name}}
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab vertical="bottom"
+           horizontal="end"
+           slot="fixed">
+    <ion-fab-button (click)="create()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

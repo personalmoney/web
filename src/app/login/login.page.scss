@@ -1,0 +1,67 @@
+.outter-window {
+    display: flex;
+    justify-content: center;
+
+    .sign-up-box {
+        width: 60%;
+        height: 100vh;
+        background-image: linear-gradient(to bottom, rgba(38, 153, 251, 1), rgb(94, 173, 233));
+        border-radius: 10px;
+
+        @media screen and (max-width: 1024px) {
+            width: 100%;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+
+            .header {
+                padding-top: 50px;
+                align-content: center;
+                .icon {
+                    align-items: center;
+                    display: flex;
+                    flex-direction: column;
+                    ion-thumbnail {
+                        margin-top: 20px;
+                        height: 180px;
+                        width: 180px;
+                    }
+                }
+
+                .heading {
+                    font-size: 30px;
+                }
+            }
+
+            .sign-up {
+                position: fixed;
+                bottom: 0;
+                padding-bottom: 25px;
+                font-size: 20px;
+
+                .options {
+                    padding: 15px;
+
+                    .option {
+                        cursor: pointer;
+                        margin-left: 10px;
+
+                        ion-thumbnail {
+                            width: 64px;
+                            height: 64px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+ion-menu {
+    visibility: hidden;
+}

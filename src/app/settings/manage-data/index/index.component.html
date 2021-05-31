@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/settings"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Import/Export data</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <ion-grid>
+        <ion-row>
+            <ion-col size="12"
+                     size-md="6"
+                     size-lg="6"
+                     *ngFor="let data of entities">
+                <ion-item>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col size="8">
+                                {{data.name}}
+                            </ion-col>
+                            <ion-col size="2">
+
+                                <ion-button fill="clear"
+                                            title="Import data"
+                                            *ngIf="data.importEnabled"
+                                            (click)="import(data)">
+                                    <ion-icon slot="icon-only"
+                                              name="cloud-download-outline"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                            <ion-col size="2">
+                                <ion-button fill="clear"
+                                            title="Export data"
+                                            *ngIf="data.exportEnabled"
+                                            (click)="export(data)">
+                                    <ion-icon slot="icon-only"
+                                              name="cloud-upload-outline"></ion-icon>
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<input hidden="true"
+       type="file"
+       #csvReader
+       title="Select a csv file to import"
+       name="Upload CSV"
+       id="txtFileUpload"
+       (change)="uploadListener($event)"
+       accept=".csv" />

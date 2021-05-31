@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-title>Import data</ion-title>
+        <ion-buttons slot="end">
+            <ion-icon name="close-circle"
+                      class="close-button"
+                      slot="end"
+                      (click)="close()">
+            </ion-icon>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+    <table class="table table-striped ion-margin">
+        <thead>
+            <tr>
+                <th *ngFor="let row of headers"
+                    scope="col">{{row}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of data">
+                <td *ngFor="let header of headers">
+                    {{row[header]}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</ion-content>

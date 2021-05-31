@@ -1,0 +1,37 @@
+ion-icon {
+    cursor: pointer;
+}
+
+.type {
+    padding: 5px;
+    border: solid;
+    margin: 1px 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.active {
+    color: var(--ion-text-color);
+
+    &.withdraw {
+        color: red;
+    }
+
+    &.deposit {
+        color: var(--ion-color-success);
+    }
+}
+
+.cat-group {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--ion-text-color);
+}
+
+ion-label.sc-ion-label-md-h.sc-ion-label-md-s.md.label-floating.hydrated {
+    transform: translateY(50%) scale(0.75);
+}
+
+ion-label.sc-ion-label-ios-h.sc-ion-label-ios-s.ios.label-floating.hydrated {
+    transform: translateY(50%) scale(0.75);
+}

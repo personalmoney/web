@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Entities</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item (click)="navigate('account-types')">
+      <fa-icon icon="hotel"></fa-icon>
+      <ion-label> Account Types </ion-label>
+    </ion-item>
+    <ion-item (click)="navigate('categories')">
+      <fa-icon icon="list"></fa-icon>
+      <ion-label> Categories </ion-label>
+    </ion-item>
+    <ion-item (click)="navigate('payees')">
+      <fa-icon icon="users"></fa-icon>
+      <ion-label> Payees </ion-label>
+    </ion-item>
+    <ion-item (click)="navigate('tags')">
+      <fa-icon icon="tags"></fa-icon>
+      <ion-label> Tags </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

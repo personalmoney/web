@@ -1,0 +1,90 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Transactions</ion-title>
+    <ion-buttons slot="end">
+      <select class="right-select"
+              (change)="accountChange($event)">
+        <option [value]="account.id"
+                [selected]="account.id === selectedAccountId"
+                *ngFor="let account of (accounts | async)">{{account.name}}</option>
+      </select>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-ios"
+             [fullscreen]="true">
+
+  <ion-grid class="content">
+    <ion-row>
+      <ion-col size="12"
+               size-md="6"
+               size-lg="6"
+               *ngFor="let record of transactions">
+        <ion-item class="item"
+                  (click)="showOptions($event, record)">
+
+          <div class="date">
+            <span class="month">{{record.date | date:'MMM' }} </span>
+            <span class="day">{{record.date | date:'dd' }} </span>
+            <span class="year">{{record.date | date:'yyyy' }} </span>
+          </div>
+
+          <div class="category-data"
+               *ngIf="record.type!==3">
+            <span class="payee">{{record.payeeName }} </span>
+            <span class="category">{{record.categoryName }} : {{record.subCategoryName}} </span>
+            <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
+            <div class="tags"> <span class="tag"
+                    *ngFor="let tag of record.tags">{{tag.name}}</span></div>
+          </div>
+
+          <div class="category-data"
+               *ngIf="record.type===3">
+            <span *ngIf="record.accountId===selectedAccount.id"> To: {{record.toAccountName}}</span>
+            <span *ngIf="record.accountId!==selectedAccount.id"> From: {{record.accountName}}</span>
+            <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
+            <div class="tags"> <span class="tag"
+                    *ngFor="let tag of record.tags">{{tag.name}}</span></div>
+          </div>
+
+          <div class="amount-data">
+            <span class="amount"
+                  [ngClass]="record.type===1?'deposit':record.type===2?'withdraw':'transfer'">{{record.amount |
+              currency}}</span>
+            <span class="balance">{{record.balance | currency}}</span>
+          </div>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll threshold="100px"
+                       (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles"
+                                 loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-fab vertical="bottom"
+           horizontal="end"
+           slot="fixed">
+    <ion-fab-button (click)="create()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <span class="label">Total balance</span>
+      <span slot="end"
+            class="total-balance"
+            [ngClass]="balance>=0?'positive':'negative'">{{balance|currency}}</span>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
+<app-sync [isWeb]="isWeb"></app-sync>

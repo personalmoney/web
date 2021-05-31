@@ -1,0 +1,32 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>
+      Select the Icon
+    </ion-title>
+    <ion-button slot="end" fill="clear" size="small" (click)="dismiss()">
+      <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionChange)="search($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let icon of filteredIcons">
+        <ion-item>
+          <ion-button slot="start" fill="clear" size="medium" (click)="dismiss(icon.name)">
+            <fa-icon color="dark" [icon]="[icon.prefix, icon.name]">
+            </fa-icon>
+            {{icon.name}}
+          </ion-button>
+        </ion-item>
+      </ion-col>
+      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-row>
+  </ion-grid>
+</ion-content>
