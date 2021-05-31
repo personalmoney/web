@@ -45,7 +45,7 @@
                           formControlName="accountType"
                           placeholder="Select Account Type"
                           [selectedText]="getName()">
-                <ion-select-option [value]="type.localId"
+                <ion-select-option [value]="type.local_id"
                                    *ngFor="let type of accountTypes">
                   {{type.name}}</ion-select-option>
               </ion-select>

@@ -17,7 +17,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  @Select(AccountState.getData) accounts$: Observable<Account[]>;
+  @Select(AccountState.getSortedData) accounts$: Observable<Account[]>;
 
   constructor(
     private store: Store,

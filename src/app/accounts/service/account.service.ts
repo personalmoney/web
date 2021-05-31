@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class AccountService extends SyncService<Account> {
 
-  endpoint = 'Account';
+  endpoint = 'accounts';
   tableName = 'Account';
 
   constructor(
@@ -30,13 +30,13 @@ export class AccountService extends SyncService<Account> {
   createLocalParms(record: Account): Observable<Account> {
     return this.checkaccountTypeLocalId(record)
       .pipe(switchMap((data) => {
-        record.accountTypeLocalId = data;
+        record.account_type_local_id = data;
         const query = `INSERT INTO ${this.tableName}(id,createdTime,updatedTime,isDeleted,localUpdatedTime,name,accountTypeLocalId,
           initialBalance,minimumBalance,creditLimit,paymentDate,interestRate,includeInBalance,excludeFromDashboard,notes,balance)
           Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-        const values = [record.id, new Date(), record.updated_time, false, record.local_updated_time, record.name, record.accountTypeLocalId,
-        record.initialBalance, record.minimumBalance, record.creditLimit, record.paymentDate, record.interestRate, record.includeInBalance,
-        record.excludeFromDashboard, record.notes, record.balance];
+        const values = [record.id, new Date(), record.updated_time, false, record.local_updated_time, record.name, record.account_type_local_id,
+        record.initial_balance, record.minimum_balance, record.credit_limit, record.payment_date, record.interest_rate, record.include_in_balance,
+        record.exclude_from_dashboard, record.notes, record.balance];
         return super.createLocal(record, query, values);
       }));
   }
@@ -44,21 +44,21 @@ export class AccountService extends SyncService<Account> {
   updateLocalParms(record: Account) {
     return this.checkaccountTypeLocalId(record)
       .pipe(switchMap((data) => {
-        record.accountTypeLocalId = data;
+        record.account_type_local_id = data;
         const query = `UPDATE ${this.tableName} SET updatedTime=?,localUpdatedTime=?,name=?,accountTypeLocalId=?,initialBalance=?,
     minimumBalance=?,creditLimit=?,paymentDate=?,interestRate=?,includeInBalance=?,excludeFromDashboard=?,
     notes=?,balance=? WHERE localId=?`;
-        const values = [record.updated_time, record.local_updated_time, record.name, record.accountTypeLocalId, record.initialBalance,
-        record.minimumBalance, record.creditLimit, record.paymentDate, record.interestRate, record.includeInBalance,
-        record.excludeFromDashboard, record.notes, record.balance, record.local_id];
+        const values = [record.updated_time, record.local_updated_time, record.name, record.account_type_local_id, record.initial_balance,
+        record.minimum_balance, record.credit_limit, record.payment_date, record.interest_rate, record.include_in_balance,
+        record.exclude_from_dashboard, record.notes, record.balance, record.local_id];
         return super.updateLocal(record, query, values);
       }));
   }
 
   checkaccountTypeLocalId(record: Account): Observable<number> {
-    if (record.accountTypeLocalId) {
-      return of(record.accountTypeLocalId);
+    if (record.account_type_local_id) {
+      return of(record.account_type_local_id);
     }
-    return from(this.accountType.getLocalId(record.accountTypeId));
+    return from(this.accountType.getLocalId(record.account_type_id));
   }
 }

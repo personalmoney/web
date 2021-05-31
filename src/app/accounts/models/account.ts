@@ -2,16 +2,16 @@ import { TimeModel } from 'src/app/models/time-model';
 
 export interface Account extends TimeModel {
     name: string;
-    accountTypeId: number;
-    accountTypeLocalId?: number;
-    initialBalance?: number;
-    minimumBalance?: number;
-    creditLimit?: number;
-    paymentDate?: Date;
-    interestRate?: number;
-    includeInBalance: boolean;
-    excludeFromDashboard?: boolean | string;
+    account_type_id: number;
+    account_type_local_id?: number;
+    initial_balance?: number;
+    minimum_balance?: number;
+    credit_limit?: number;
+    payment_date?: Date;
+    interest_rate?: number;
+    include_in_balance: boolean;
+    exclude_from_dashboard?: boolean | string;
     notes?: string;
     balance?: number;
-    isActive?: boolean;
+    is_active?: boolean;
 }

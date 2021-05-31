@@ -16,7 +16,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  @Select(AccountTypeState.getData) accountTypes$: Observable<AccountType[]>;
+  @Select(AccountTypeState.getSortedData) accountTypes$: Observable<AccountType[]>;
 
   constructor(
     private alertController: AlertController,
