@@ -3,13 +3,12 @@ import { BaseForm } from 'src/app/core/helpers/base-form';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { takeUntil, last, takeLast } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Account } from '../models/account';
 import { AccountType } from 'src/app/entities/account-type/models/account-type';
 import { Store, Select } from '@ngxs/store';
 import { AddAccount, UpdateAccount } from '../store/actions';
 import { AccountTypeState } from 'src/app/entities/account-type/store/store';
-import { GetAccountTypes } from 'src/app/entities/account-type/store/actions';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { StoreService } from 'src/app/store/store.service';
 
@@ -24,7 +23,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   account: Account;
   accountTypes: AccountType[] = [];
   isWeb = false;
-  @Select(AccountTypeState.getData) accountTypes$: Observable<AccountType[]>;
+  @Select(AccountTypeState.getSortedData) accountTypes$: Observable<AccountType[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,7 +43,7 @@ export class SaveComponent extends BaseForm implements OnInit {
 
   ngOnInit() {
     if (!this.account) {
-      this.account = { name: '', accountTypeId: 0, includeInBalance: true, excludeFromDashboard: false };
+      this.account = { name: '', account_type_id: 0, include_in_balance: true, exclude_from_dashboard: false };
     }
 
     this.accountTypes$
@@ -55,15 +54,15 @@ export class SaveComponent extends BaseForm implements OnInit {
 
     this.form = this.formBuilder.group({
       name: [this.account.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      accountType: [this.isWeb ? this.account.accountTypeId : this.account.accountTypeLocalId,
+      accountType: [this.isWeb ? this.account.account_type_id : this.account.account_type_local_id,
       [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      creditLimit: [this.account.creditLimit, [Validators.min(0)]],
-      includeInBalance: [this.account.includeInBalance, [Validators.required]],
-      initialBalance: [this.account.initialBalance, [Validators.min(0)]],
-      interestRate: [this.account.interestRate, [Validators.min(0)]],
-      minimumBalance: [this.account.minimumBalance, [Validators.min(0)]],
-      paymentDate: [this.account.paymentDate, [Validators.max(31)]],
-      excludeFromDashboard: [this.account.excludeFromDashboard],
+      creditLimit: [this.account.credit_limit, [Validators.min(0)]],
+      includeInBalance: [this.account.include_in_balance, [Validators.required]],
+      initialBalance: [this.account.initial_balance, [Validators.min(0)]],
+      interestRate: [this.account.interest_rate, [Validators.min(0)]],
+      minimumBalance: [this.account.minimum_balance, [Validators.min(0)]],
+      paymentDate: [this.account.payment_date, [Validators.max(31)]],
+      excludeFromDashboard: [this.account.exclude_from_dashboard],
       notes: [this.account.notes]
     });
   }
@@ -77,24 +76,24 @@ export class SaveComponent extends BaseForm implements OnInit {
 
     model.name = this.form.controls.name.value;
     if (this.isWeb) {
-      model.accountTypeId = this.form.controls.accountType.value;
+      model.account_type_id = this.form.controls.accountType.value;
     } else {
-      model.accountTypeLocalId = this.form.controls.accountType.value;
-      model.accountTypeId = this.getaccountTypeLocalId(model.accountTypeLocalId);
+      model.account_type_local_id = this.form.controls.accountType.value;
+      model.account_type_id = this.getaccountTypeLocalId(model.account_type_local_id);
     }
-    model.includeInBalance = this.form.controls.includeInBalance.value;
-    model.initialBalance = this.getNumberValue(this.form.controls.initialBalance.value);
-    model.minimumBalance = this.getNumberValue(this.form.controls.minimumBalance.value);
-    model.creditLimit = this.getNumberValue(this.form.controls.creditLimit.value);
-    model.interestRate = this.getNumberValue(this.form.controls.interestRate.value);
-    model.paymentDate = this.form.controls.paymentDate.value;
-    model.excludeFromDashboard = this.form.controls.excludeFromDashboard.value;
+    model.include_in_balance = this.form.controls.includeInBalance.value;
+    model.initial_balance = this.getNumberValue(this.form.controls.initialBalance.value);
+    model.minimum_balance = this.getNumberValue(this.form.controls.minimumBalance.value);
+    model.credit_limit = this.getNumberValue(this.form.controls.creditLimit.value);
+    model.interest_rate = this.getNumberValue(this.form.controls.interestRate.value);
+    model.payment_date = this.form.controls.paymentDate.value;
+    model.exclude_from_dashboard = this.form.controls.excludeFromDashboard.value;
     model.notes = this.form.controls.notes.value;
-    if (typeof (model.includeInBalance) === 'string') {
-      model.includeInBalance = model.includeInBalance === 'true';
+    if (typeof (model.include_in_balance) === 'string') {
+      model.include_in_balance = model.include_in_balance === 'true';
     }
-    if (typeof (model.excludeFromDashboard) === 'string') {
-      model.excludeFromDashboard = model.excludeFromDashboard === 'true';
+    if (typeof (model.exclude_from_dashboard) === 'string') {
+      model.exclude_from_dashboard = model.exclude_from_dashboard === 'true';
     }
     let obserable: Observable<Account>;
     if (!model.id) {

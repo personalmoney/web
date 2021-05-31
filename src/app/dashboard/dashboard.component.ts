@@ -62,13 +62,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     this.accountTypes.map(c => {
       let currentAccounts;
       if (this.isWeb) {
-        currentAccounts = this.accounts.filter(d => d.accountTypeId === c.id
-          && d.excludeFromDashboard === false
-          && d.isActive === true);
+        currentAccounts = this.accounts.filter(d => d.account_type_id === c.id
+          && d.exclude_from_dashboard === false
+          && d.is_active === true);
       }
       else {
-        currentAccounts = this.accounts.filter(d => d.accountTypeLocalId === c.local_id
-          && d.excludeFromDashboard === this.shared.falseValue);
+        currentAccounts = this.accounts.filter(d => d.account_type_local_id === c.local_id
+          && d.exclude_from_dashboard === this.shared.falseValue);
       }
       if (currentAccounts.length <= 0) {
         return;
@@ -86,7 +86,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     });
 
     this.accounts.map(c => {
-      if (c.includeInBalance === false) {
+      if (c.include_in_balance === false) {
         return;
       }
       this.totalBalance += c.balance;
