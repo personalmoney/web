@@ -23,6 +23,14 @@ export class PayeeState {
         return state.data;
     }
 
+    @Selector()
+    static getSortedData(state: PayeeStateModel) {
+        if (state.data) {
+            return [...state.data].sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        return state.data;
+    }
+
     @Action(GetPayees)
     get({ getState, setState }: StateContext<PayeeStateModel>) {
 

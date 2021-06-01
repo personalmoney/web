@@ -16,7 +16,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  @Select(PayeeState.getData) payees$: Observable<Payee[]>;
+  @Select(PayeeState.getSortedData) payees$: Observable<Payee[]>;
 
   constructor(
     private store: Store,
