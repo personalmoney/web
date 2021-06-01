@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
   providedIn: 'root'
 })
 export class CategoryService extends SyncService<Category> {
-  endpoint = 'Category';
+  endpoint = 'categories';
   tableName = 'Category';
 
   constructor(

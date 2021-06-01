@@ -28,6 +28,14 @@ export class CategoryState {
         return state.data;
     }
 
+    @Selector()
+    static getSortedData(state: CategoryStateModel) {
+        if (state.data) {
+            return [...state.data].sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        return state.data;
+    }
+
     @Action(GetCategories)
     get({ getState, setState }: StateContext<CategoryStateModel>) {
 
