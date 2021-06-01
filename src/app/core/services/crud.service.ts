@@ -36,9 +36,9 @@ export abstract class CrudService<T extends TimeModel> {
     return `SELECT * FROM ${this.tableName} WHERE isDeleted='${this.shared.falseValue}'`;
   }
 
-  getAll(forceRefresh = false): Observable<T[]> {
+  getAll(forceRefresh = false, queryString: string = '*'): Observable<T[]> {
     if (this.isweb || forceRefresh) {
-      return from(this.authService.supabase.from(this.endpoint).select('*'))
+      return from(this.authService.supabase.from(this.endpoint).select(queryString))
         .pipe(map(response => response.data));
     }
     const query = this.getLocalParams();
