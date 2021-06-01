@@ -27,7 +27,7 @@ export class CategoryService extends SyncService<Category> {
 
   getAll() {
     if (this.isweb) {
-      return super.getAll();
+      return super.getAll(false, `*,sub_categories(*)`);
     }
     return super.getAll()
       .pipe(
@@ -39,7 +39,7 @@ export class CategoryService extends SyncService<Category> {
             .pipe(map(result => {
               const values = result.values as SubCategory[];
               data.forEach(d => {
-                d.subCategories = values.filter(f => f.localCategoryId === d.local_id);
+                d.sub_categories = values.filter(f => f.local_category_id === d.local_id);
               });
               return data;
             }));

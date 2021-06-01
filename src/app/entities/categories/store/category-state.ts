@@ -97,10 +97,10 @@ export class CategoryState {
         return this.subCategoryService.create(payload).pipe(tap((result) => {
             const { index } = this.getCategory(getState, payload);
             setState((state: CategoryStateModel) => {
-                if (!state.data[index].subCategories) {
-                    state.data[index].subCategories = [];
+                if (!state.data[index].sub_categories) {
+                    state.data[index].sub_categories = [];
                 }
-                state.data[index].subCategories.push(result);
+                state.data[index].sub_categories.push(result);
                 return state;
             });
         }));
@@ -111,10 +111,10 @@ export class CategoryState {
     updateSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: UpdateSubCategory) {
         return this.subCategoryService.update(payload).pipe(tap((result) => {
             const { category, index } = this.getCategory(getState, payload);
-            const dataIndex = category.subCategories.findIndex(item => payload.local_id
+            const dataIndex = category.sub_categories.findIndex(item => payload.local_id
                 ? (item.local_id === payload.local_id) : (item.id === payload.id));
             setState((state: CategoryStateModel) => {
-                state.data[index].subCategories[dataIndex] = result;
+                state.data[index].sub_categories[dataIndex] = result;
                 return state;
             });
         }));
@@ -127,14 +127,14 @@ export class CategoryState {
             const { category, index } = this.getCategory(getState, payload);
             let filteredArray;
             if (payload.id) {
-                filteredArray = category.subCategories.filter(item => item.id !== payload.id);
+                filteredArray = category.sub_categories.filter(item => item.id !== payload.id);
             }
             else {
-                filteredArray = category.subCategories.filter(item => item.local_id !== payload.local_id);
+                filteredArray = category.sub_categories.filter(item => item.local_id !== payload.local_id);
             }
 
             setState((state: CategoryStateModel) => {
-                state.data[index].subCategories = filteredArray;
+                state.data[index].sub_categories = filteredArray;
                 return state;
             });
         }));
@@ -143,8 +143,8 @@ export class CategoryState {
     private getCategory(getState: () => CategoryStateModel, payload: SubCategory) {
         const state = getState();
         const dataList = [...state.data];
-        const index = dataList.findIndex(item => payload.localCategoryId
-            ? (item.local_id === payload.localCategoryId) : (item.id === payload.categoryId));
+        const index = dataList.findIndex(item => payload.local_category_id
+            ? (item.local_id === payload.local_category_id) : (item.id === payload.category_id));
         const category = dataList[index];
         return { category, index };
     }

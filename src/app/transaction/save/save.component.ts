@@ -131,7 +131,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   searchCategories($event) {
     if (this.subCategories.length <= 0 && this.categories) {
       this.categories.forEach(c => {
-        const result = c.subCategories.map(d => Object.assign({}, d, { categoryName: c.name }));
+        const result = c.sub_categories.map(d => Object.assign({}, d, { categoryName: c.name }));
         this.subCategories.push(...result);
       });
     }

@@ -51,8 +51,8 @@ export class SubCategoryComponent extends BaseForm implements OnInit {
       return;
     }
     const model = { ...this.subCategory };
-    model.categoryId = this.categoryId;
-    model.localCategoryId = this.localCategoryId;
+    model.category_id = this.categoryId;
+    model.local_category_id = this.localCategoryId;
     model.name = this.form.controls.name.value;
 
     let obserable: Observable<SubCategory>;

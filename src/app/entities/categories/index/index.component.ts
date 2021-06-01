@@ -137,8 +137,8 @@ export class IndexComponent extends BaseComponent implements OnInit {
       animated: true,
       swipeToClose: true,
       componentProps: {
-        categoryId: subCategory.categoryId,
-        localCategoryId: subCategory.localCategoryId,
+        categoryId: subCategory.category_id,
+        localCategoryId: subCategory.local_category_id,
         subCategory
       }
     };
