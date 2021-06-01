@@ -38,7 +38,7 @@ export abstract class CrudService<T extends TimeModel> {
 
   getAll(forceRefresh = false, queryString: string = '*'): Observable<T[]> {
     if (this.isweb || forceRefresh) {
-      return from(this.authService.supabase.from(this.endpoint).select(queryString))
+      return from(this.authService.supabase.from(this.endpoint).select(queryString).eq("is_deleted", false))
         .pipe(map(response => response.data));
     }
     const query = this.getLocalParams();
@@ -154,7 +154,7 @@ export abstract class CrudService<T extends TimeModel> {
 
   protected deleteRequest(record: T) {
     const value = record.id.toString();
-    return from(this.authService.supabase.from(this.endpoint).delete().match({ value }))
+    return from(this.authService.supabase.from(this.endpoint).update({ is_deleted: true }).match({ id: value }))
       .pipe(map(() => null));
   }
 
