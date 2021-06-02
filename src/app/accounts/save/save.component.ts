@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Account } from '../models/account';
 import { AccountType } from 'src/app/entities/account-type/models/account-type';
 import { Store, Select } from '@ngxs/store';
-import { AddAccount, UpdateAccount } from '../store/actions';
+import { AddAccount, GetAccounts, UpdateAccount } from '../store/actions';
 import { AccountTypeState } from 'src/app/entities/account-type/store/store';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { StoreService } from 'src/app/store/store.service';
@@ -112,6 +112,7 @@ export class SaveComponent extends BaseForm implements OnInit {
           this.handleErrors(err);
         },
         complete: () => {
+          this.store.dispatch(new GetAccounts());
           this.close(true);
         }
       });
