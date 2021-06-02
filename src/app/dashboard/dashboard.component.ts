@@ -9,6 +9,8 @@ import { NavController } from '@ionic/angular';
 import { StoreService } from '../store/store.service';
 import { Store } from '@ngxs/store';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { AccountState } from '../accounts/store/store';
+import { AccountTypeState } from '../entities/account-type/store/store';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,8 +45,8 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     this.storeService.getAccountTypes();
 
     const loader = [];
-    loader.push(this.store.select(c => c.accounts.data));
-    loader.push(this.store.select(c => c.accountTypes.data));
+    loader.push(this.store.select(AccountState.getSortedData));
+    loader.push(this.store.select(AccountTypeState.getSortedData));
 
     combineLatest(loader)
       .subscribe(([data1, data2]) => {
