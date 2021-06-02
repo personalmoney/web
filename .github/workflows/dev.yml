@@ -9,6 +9,7 @@ jobs:
   build_and_deploy:
     environment:
       name: DEV
+      url: https://dev.money.bhagavan.tech
     runs-on: ubuntu-latest
 
     steps:
