@@ -39,7 +39,6 @@ export class TransactionService extends SyncService<Transaction> {
       };
 
       const startIndex = (request.currentPage - 1) * request.pageSize;
-      const accountId: number = request.account_id;
 
       const query = this.authService.supabase
         .rpc('function_transactions_details', {
