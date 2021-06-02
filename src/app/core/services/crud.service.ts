@@ -1,4 +1,4 @@
-import { Observable, from, of } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from './sq-lite.service';
 import { map, switchMap } from 'rxjs/operators';
@@ -38,7 +38,7 @@ export abstract class CrudService<T extends TimeModel> {
 
   getAll(forceRefresh = false, queryString: string = '*'): Observable<T[]> {
     if (this.isweb || forceRefresh) {
-      return from(this.authService.supabase.from(this.endpoint).select(queryString).eq("is_deleted", false))
+      return from(this.authService.supabase.from(this.endpoint).select(queryString))
         .pipe(map(response => response.data));
     }
     const query = this.getLocalParams();
@@ -77,7 +77,6 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   private createRequest(record: T): Observable<T> {
-    delete record.is_deleted;
     record.created_time = record.updated_time = new Date();
     record.user_id = this.currentUserId;
     return from(this.authService.supabase.from(this.endpoint).insert(record))
@@ -111,7 +110,6 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   private updateRequest(record: T): Observable<T> {
-    delete record.is_deleted;
     delete record.created_time;
     record.updated_time = new Date();
     const id = record.id.toString();
@@ -154,7 +152,7 @@ export abstract class CrudService<T extends TimeModel> {
 
   protected deleteRequest(record: T) {
     const value = record.id.toString();
-    return from(this.authService.supabase.from(this.endpoint).update({ is_deleted: true }).match({ id: value }))
+    return from(this.authService.supabase.from(this.endpoint).delete().match({ id: value }))
       .pipe(map(() => null));
   }
 
