@@ -27,7 +27,7 @@ export class CategoryService extends SyncService<Category> {
 
   getAll() {
     if (this.isweb) {
-      return super.getAll(false, `*,sub_categories(*)`);
+      return super.getAll(false, `*,sub_categories(id,name,category_id,is_deleted)`);
     }
     return super.getAll()
       .pipe(
