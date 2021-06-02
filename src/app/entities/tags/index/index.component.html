@@ -9,9 +9,12 @@
 
 <ion-content [fullscreen]="true">
 
-  <ion-grid>
+  <ion-grid *ngIf="tags$ | async; let tags">
     <ion-row>
-      <ion-col size="12" size-md="6" size-lg="6" *ngFor="let tag of (tags$ | async)">
+      <ion-col size="12"
+               size-md="6"
+               size-lg="6"
+               *ngFor="let tag of tags">
         <ion-item>
           <ion-grid>
             <ion-row>
@@ -19,19 +22,28 @@
                 {{tag.name}}
               </ion-col>
               <ion-col size="1.5">
-                <ion-icon (click)="edit(tag)" name="create-outline"></ion-icon>
+                <ion-icon (click)="edit(tag)"
+                          name="create-outline"></ion-icon>
               </ion-col>
               <ion-col size="1.5">
-                <ion-icon (click)="delete(tag)" name="trash-outline"></ion-icon>
+                <ion-icon (click)="delete(tag)"
+                          name="trash-outline"></ion-icon>
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-item>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="tags.length <= 0">
+      <ion-col>
+        <p>No records found</p>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab vertical="bottom"
+           horizontal="end"
+           slot="fixed">
     <ion-fab-button (click)="create()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

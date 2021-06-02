@@ -20,16 +20,16 @@
       <ion-item lines="full">
         <ion-label>Type</ion-label>
         <ion-icon class="type deposit"
-                  [ngClass]="this.form.controls.type.value===1?'active':'in-active'"
-                  (click)="selectType(1)"
+                  [ngClass]="this.form.controls.type.value==='Deposit'?'active':'in-active'"
+                  (click)="selectType('Deposit')"
                   name="add-circle-outline"></ion-icon>
         <ion-icon class="type withdraw"
-                  [ngClass]="this.form.controls.type.value===2?'active':'in-active'"
-                  (click)="selectType(2)"
+                  [ngClass]="this.form.controls.type.value==='Withdraw'?'active':'in-active'"
+                  (click)="selectType('Withdraw')"
                   name="remove-circle-outline"></ion-icon>
         <ion-icon class="type transfer"
-                  [ngClass]="this.form.controls.type.value===3?'active':'in-active'"
-                  (click)="selectType(3)"
+                  [ngClass]="this.form.controls.type.value==='Transfer'?'active':'in-active'"
+                  (click)="selectType('Transfer')"
                   name="arrow-redo-outline"></ion-icon>
       </ion-item>
 
@@ -49,7 +49,8 @@
       </span>
 
       <ion-item lines="full">
-        <ion-label position="floating"> <span *ngIf="this.form.controls.type.value===3">From</span> Account</ion-label>
+        <ion-label position="floating"> <span *ngIf="this.form.controls.type.value==='Transfer'">From</span> Account
+        </ion-label>
         <ionic-selectable #accountComponent
                           formControlName="account"
                           [items]="accounts"
@@ -81,12 +82,12 @@
       </span>
 
       <ion-item lines="full"
-                *ngIf="this.form.controls.type.value===3">
+                *ngIf="this.form.controls.type.value==='Transfer'">
         <ion-label position="floating">To Account</ion-label>
         <ionic-selectable #toAccountComponent
                           formControlName="toAccount"
                           [items]="accounts"
-                          [required]=" this.form.controls.type.value===3"
+                          [required]=" this.form.controls.type.value==='Transfer'"
                           placeholder="Select account"
                           itemValueField="id"
                           itemTextField="name"
@@ -130,7 +131,7 @@
       </span>
 
       <ion-item lines="full"
-                *ngIf="this.form.controls.type.value!==3">
+                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Category</ion-label>
         <ionic-selectable #categoryComponent
                           formControlName="category"
@@ -138,8 +139,8 @@
                           placeholder="Select category"
                           itemValueField="id"
                           itemTextField="name"
-                          groupValueField="categoryId"
-                          groupTextField="categoryName"
+                          groupValueField="category_id"
+                          groupTextField="category_name"
                           [canSearch]="true"
                           (onSearch)="searchCategories($event)">
           <ng-template ionicSelectableHeaderTemplate>
@@ -160,7 +161,7 @@
           </ng-template>
           <ng-template ionicSelectableValueTemplate
                        let-category="value">
-            {{category.categoryName}} / {{category.name}}
+            {{category.category_name}} / {{category.name}}
           </ng-template>
         </ionic-selectable>
       </ion-item>
@@ -174,7 +175,7 @@
       </span>
 
       <ion-item lines="full"
-                *ngIf="this.form.controls.type.value!==3">
+                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Payee</ion-label>
         <ionic-selectable #payeeComponent
                           formControlName="payee"
@@ -208,7 +209,7 @@
       </span>
 
       <ion-item lines="full"
-                *ngIf="this.form.controls.type.value!==3">
+                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Tags</ion-label>
         <ionic-selectable #tagComponent
                           formControlName="tags"

@@ -9,6 +9,8 @@ import { NavController } from '@ionic/angular';
 import { StoreService } from '../store/store.service';
 import { Store } from '@ngxs/store';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { AccountState } from '../accounts/store/store';
+import { AccountTypeState } from '../entities/account-type/store/store';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,8 +45,8 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     this.storeService.getAccountTypes();
 
     const loader = [];
-    loader.push(this.store.select(c => c.accounts.data));
-    loader.push(this.store.select(c => c.accountTypes.data));
+    loader.push(this.store.select(AccountState.getSortedData));
+    loader.push(this.store.select(AccountTypeState.getSortedData));
 
     combineLatest(loader)
       .subscribe(([data1, data2]) => {
@@ -62,13 +64,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     this.accountTypes.map(c => {
       let currentAccounts;
       if (this.isWeb) {
-        currentAccounts = this.accounts.filter(d => d.accountTypeId === c.id
-          && d.excludeFromDashboard === false
-          && d.isActive === true);
+        currentAccounts = this.accounts.filter(d => d.account_type_id === c.id
+          && d.exclude_from_dashboard === false
+          && d.is_active === true);
       }
       else {
-        currentAccounts = this.accounts.filter(d => d.accountTypeLocalId === c.local_id
-          && d.excludeFromDashboard === this.shared.falseValue);
+        currentAccounts = this.accounts.filter(d => d.account_type_local_id === c.local_id
+          && d.exclude_from_dashboard === this.shared.falseValue);
       }
       if (currentAccounts.length <= 0) {
         return;
@@ -86,7 +88,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     });
 
     this.accounts.map(c => {
-      if (c.includeInBalance === false) {
+      if (c.include_in_balance === false) {
         return;
       }
       this.totalBalance += c.balance;

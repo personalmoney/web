@@ -9,7 +9,7 @@ import { SubCategoryComponent } from '../sub-category/sub-category.component';
 import { ActionsComponent } from 'src/app/core/components/actions/actions.component';
 import { CategoryState } from '../store/category-state';
 import { Select, Store } from '@ngxs/store';
-import { GetCategories, DeleteCategory, DeleteSubCategory } from '../store/actions';
+import { DeleteCategory, DeleteSubCategory } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
 
 @Component({
@@ -19,7 +19,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  @Select(CategoryState.getData) categories$: Observable<Category[]>;
+  @Select(CategoryState.getSortedData) categories$: Observable<Category[]>;
   selectedIds = [];
 
   constructor(
@@ -137,8 +137,8 @@ export class IndexComponent extends BaseComponent implements OnInit {
       animated: true,
       swipeToClose: true,
       componentProps: {
-        categoryId: subCategory.categoryId,
-        localCategoryId: subCategory.localCategoryId,
+        categoryId: subCategory.category_id,
+        localCategoryId: subCategory.local_category_id,
         subCategory
       }
     };

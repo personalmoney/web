@@ -54,9 +54,8 @@ export class AuthService {
       return true;
     }
     this.spinner.show();
-    await this.supabase.auth.signIn({ provider: 'google' }, { redirectTo: '/dashboard' });
+    await this.supabase.auth.signIn({ provider: 'google' }, { redirectTo: '/login' });
     this.spinner.hide();
-    this.shared.showMenu$.next(true);
   }
 
   async isLoggedIn(): Promise<boolean> {

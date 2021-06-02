@@ -6,7 +6,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { SaveComponent } from '../save/save.component';
 import { TagState } from '../store/store';
 import { Store, Select } from '@ngxs/store';
-import { GetTags, DeleteTag } from '../store/actions';
+import { DeleteTag } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  @Select(TagState.getData) tags$: Observable<Tag[]>;
+  @Select(TagState.getSortedData) tags$: Observable<Tag[]>;
 
   constructor(
     private store: Store,

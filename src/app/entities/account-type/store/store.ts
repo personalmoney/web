@@ -25,6 +25,14 @@ export class AccountTypeState {
         return state.data;
     }
 
+    @Selector()
+    static getSortedData(state: AccountTypeStateModel) {
+        if (state.data) {
+            return [...state.data].sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        return state.data;
+    }
+
     @Action(GetAccountTypes)
     get({ getState, setState }: StateContext<AccountTypeStateModel>) {
         return this.service.getAll().pipe(tap((result) => {
