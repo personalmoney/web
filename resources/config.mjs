@@ -5,8 +5,8 @@ const targetPath = './src/environments/environment.prod.ts';
 const envConfigFile = `export const environment = {
    production: true,
    supabase: {
-    url: '${process.env.SUPABASE_URL}',
-    key: '${process.env.SUPABASE_KEY}'
+    url: '${process.env.APP_URL}',
+    key: '${process.env.APP_KEY}'
    }
 };
 `;
