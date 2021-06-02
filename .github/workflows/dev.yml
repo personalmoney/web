@@ -20,10 +20,13 @@ jobs:
         with:
           node-version: 16.x
 
+      - run: npm install
+        name: Install packages
+
       - run: npm run lint
         name: Check Code
 
-      - name: Deploy
+      - name: Build and Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           # Action to perform
