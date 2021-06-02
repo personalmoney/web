@@ -28,24 +28,24 @@
                   (click)="showOptions($event, record)">
 
           <div class="date">
-            <span class="month">{{record.date | date:'MMM' }} </span>
-            <span class="day">{{record.date | date:'dd' }} </span>
-            <span class="year">{{record.date | date:'yyyy' }} </span>
+            <span class="month">{{record.trans_date | date:'MMM' }} </span>
+            <span class="day">{{record.trans_date | date:'dd' }} </span>
+            <span class="year">{{record.trans_date | date:'yyyy' }} </span>
           </div>
 
           <div class="category-data"
-               *ngIf="record.type!==3">
-            <span class="payee">{{record.payeeName }} </span>
-            <span class="category">{{record.categoryName }} : {{record.subCategoryName}} </span>
+               *ngIf="record.trans_type!=='Transfer'">
+            <span class="payee">{{record.payee_name }} </span>
+            <span class="category">{{record.category_name }} : {{record.sub_category_name}} </span>
             <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
             <div class="tags"> <span class="tag"
                     *ngFor="let tag of record.tags">{{tag.name}}</span></div>
           </div>
 
           <div class="category-data"
-               *ngIf="record.type===3">
-            <span *ngIf="record.accountId===selectedAccount.id"> To: {{record.toAccountName}}</span>
-            <span *ngIf="record.accountId!==selectedAccount.id"> From: {{record.accountName}}</span>
+               *ngIf="record.trans_type==='Transfer'">
+            <span *ngIf="record.account_id===selectedAccount.id"> To: {{record.to_account_name}}</span>
+            <span *ngIf="record.account_id!==selectedAccount.id"> From: {{record.account_name}}</span>
             <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
             <div class="tags"> <span class="tag"
                     *ngFor="let tag of record.tags">{{tag.name}}</span></div>
@@ -53,11 +53,16 @@
 
           <div class="amount-data">
             <span class="amount"
-                  [ngClass]="record.type===1?'deposit':record.type===2?'withdraw':'transfer'">{{record.amount |
+                  [ngClass]="record.trans_type">{{record.amount |
               currency}}</span>
             <span class="balance">{{record.balance | currency}}</span>
           </div>
         </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="transactions.length <= 0">
+      <ion-col>
+        <p>No records found</p>
       </ion-col>
     </ion-row>
   </ion-grid>

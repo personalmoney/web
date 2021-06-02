@@ -16,6 +16,7 @@ import { NavController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { TransactionView } from '../models/transaction-view';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { AccountState } from 'src/app/accounts/store/store';
 
 @Component({
   selector: 'app-save',
@@ -58,7 +59,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   ngOnInit() {
     const date = new Date().toISOString().slice(0, 10);
     this.form = this.formBuilder.group({
-      type: [2, [Validators.required]],
+      type: ['Withdraw', [Validators.required]],
       date: [date, [Validators.required]],
       account: ['', [Validators.required]],
       toAccount: [''],
@@ -76,7 +77,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     }).pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
 
-    this.store.select(c => c.accounts.data)
+    this.store.select(AccountState.getSortedData)
       .pipe(
         takeUntil(this.ngUnsubscribe),
         tap(data => {
@@ -85,7 +86,7 @@ export class SaveComponent extends BaseForm implements OnInit {
           this.activeRoute.paramMap
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((data2) => {
-              const accountId = data2.get('accountId');
+              const accountId = +data2.get('accountId');
               const id = data2.get('id');
               if (accountId && data) {
                 const account = data.find(c => c.id == accountId);
@@ -113,17 +114,17 @@ export class SaveComponent extends BaseForm implements OnInit {
           this.searchCategories({});
           this.transactionId = data.id;
           this.form.patchValue({
-            type: data.type,
-            date: new Date(data.date).toISOString().slice(0, 10),
-            account: this.accounts.find(d => d.id === data.accountId),
-            toAccount: this.accounts.find(d => d.id === data.toAccountId),
+            type: data.trans_type,
+            date: new Date(data.trans_date).toISOString().slice(0, 10),
+            account: this.accounts.find(d => d.id === data.account_id),
+            toAccount: this.accounts.find(d => d.id === data.to_account_id),
             amount: data.amount,
-            category: this.subCategories.find(d => d.id === data.subCategoryId),
-            payee: this.payees.find(d => d.id === data.payeeId),
+            category: this.subCategories.find(d => d.id === data.sub_category_id),
+            payee: this.payees.find(d => d.id === data.payee_id),
             tags: data.tags,
             notes: data.notes,
           });
-          this.selectType(data.type);
+          this.selectType(data.trans_type);
         }
       });
   }
@@ -131,7 +132,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   searchCategories($event) {
     if (this.subCategories.length <= 0 && this.categories) {
       this.categories.forEach(c => {
-        const result = c.sub_categories.map(d => Object.assign({}, d, { categoryName: c.name }));
+        const result = c.sub_categories.map(d => Object.assign({}, d, { category_name: c.name }));
         this.subCategories.push(...result);
       });
     }
@@ -157,9 +158,9 @@ export class SaveComponent extends BaseForm implements OnInit {
     return filteredRecords;
   }
 
-  selectType(value: number) {
+  selectType(value: string) {
     this.form.controls.type.setValue(value);
-    if (value === 3) {
+    if (value === 'Transfer') {
       this.form.controls.category.clearValidators();
       this.form.controls.payee.clearValidators();
       this.form.controls.toAccount.setValidators(Validators.required);
@@ -181,35 +182,35 @@ export class SaveComponent extends BaseForm implements OnInit {
 
     const model: Transaction = {
       id: this.transactionId,
-      accountId: this.form.controls.account.value.id,
-      accountLocalId: this.form.controls.account.value.localId,
+      account_id: this.form.controls.account.value.id,
+      account_local_id: this.form.controls.account.value.localId,
       amount: this.form.controls.amount.value,
-      type: this.form.controls.type.value,
-      date: this.form.controls.date.value,
+      trans_type: this.form.controls.type.value,
+      trans_date: this.form.controls.date.value,
       notes: this.form.controls.notes.value,
     };
-    if (model.type === 3) {
-      model.toAccountId = this.form.controls.toAccount.value.id;
-      model.toAccountLocalId = this.form.controls.toAccount.value.localId;
+    if (model.trans_type === 'Transfer') {
+      model.to_account_id = this.form.controls.toAccount.value.id;
+      model.to_account_local_id = this.form.controls.toAccount.value.localId;
 
-      if (model.accountId === model.toAccountId) {
+      if (model.account_id === model.to_account_id) {
         this.form.controls.toAccount.setErrors({ remoteError: 'From and To Account should be different' });
         return;
       }
     }
     else {
-      model.subCategoryId = this.form.controls.category.value.id;
-      model.subCategoryLocalId = this.form.controls.category.value.localId;
-      model.payeeId = this.form.controls.payee.value.id;
-      model.payeeLocalId = this.form.controls.payee.value.localId;
-      model.tagIds = [];
-      model.tagIdsLocal = [];
+      model.sub_category_id = this.form.controls.category.value.id;
+      model.sub_category_local_id = this.form.controls.category.value.localId;
+      model.payee_id = this.form.controls.payee.value.id;
+      model.payee_local_id = this.form.controls.payee.value.localId;
+      model.tag_ids = [];
+      model.tag_ids_local = [];
       if (this.form.controls.tags.value) {
         this.form.controls.tags.value.forEach(element => {
           if (element.localId) {
           }
           if (element.id) {
-            model.tagIds.push(element.id);
+            model.tag_ids.push(element.id);
           }
         });
       }
@@ -229,7 +230,7 @@ export class SaveComponent extends BaseForm implements OnInit {
         },
         complete: () => {
           this.storeService.getAccounts(true);
-          this.router.navigateRoot(['transactions/account', model.accountId]);
+          this.router.navigateRoot(['transactions/account', model.account_id]);
         }
       });
   }

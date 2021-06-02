@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class TransactionService extends SyncService<Transaction> {
 
-  endpoint = 'Transaction';
+  endpoint = 'transactions';
   tableName = 'Transaction';
 
   constructor(
@@ -30,16 +30,63 @@ export class TransactionService extends SyncService<Transaction> {
 
   getTransactions(request: TransactionSearch): Observable<PageResponse<TransactionView>> {
     if (this.isweb) {
-      const qs = Object.keys(request)
-        .map(key => `${key}=${request[key]}`)
-        .join('&');
-      return this.http.get<PageResponse<TransactionView>>(`${this.endpoint}?${qs}`);
+
+      const pageResponse: PageResponse<TransactionView> = {
+        totalRecords: 0,
+        currentPage: request.currentPage,
+        pageSize: request.pageSize,
+        records: []
+      };
+
+      const startIndex = (request.currentPage - 1) * request.pageSize;
+      const accountId: number = request.account_id;
+
+      const query = this.authService.supabase
+        .rpc('function_transactions_details', {
+          from_account_id: request.account_id,
+          start_index: startIndex,
+          page_size: request.pageSize
+        });
+
+      return from(query)
+        .pipe(map(response => {
+          pageResponse.records = response.data;
+          return pageResponse;
+        }));
     }
     const query = this.getLocalParams();
     return from(this.sqlite.query(query))
       .pipe(map(result => {
         return result.values as PageResponse<TransactionView>;
       }));
+  }
+
+  create(record: Transaction): Observable<Transaction> {
+    if (this.isweb) {
+      return this.createOrUpdateRecord(record);
+    }
+    else {
+      return super.create(record);
+    }
+  }
+
+  update(record: Transaction): Observable<Transaction> {
+    if (this.isweb) {
+      return this.createOrUpdateRecord(record);
+    }
+    else {
+      return super.update(record);
+    }
+  }
+
+  createOrUpdateRecord(record: Transaction): Observable<Transaction> {
+    record.created_time = record.updated_time = new Date();
+    if (record.id) {
+      delete record.created_time;
+    }
+    record.user_id = this.currentUserId;
+    return from(this.authService.supabase.rpc("save_transactions", { record: record }))
+      .pipe(map(response => response.data[0]));
   }
 
   createLocalParms(record: Transaction): Observable<Transaction> {
