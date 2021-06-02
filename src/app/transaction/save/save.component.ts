@@ -17,6 +17,9 @@ import { ActivatedRoute } from '@angular/router';
 import { TransactionView } from '../models/transaction-view';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { AccountState } from 'src/app/accounts/store/store';
+import { PayeeState } from 'src/app/entities/payees/store/store';
+import { TagState } from 'src/app/entities/tags/store/store';
+import { CategoryState } from 'src/app/entities/categories/store/category-state';
 
 @Component({
   selector: 'app-save',
@@ -70,12 +73,17 @@ export class SaveComponent extends BaseForm implements OnInit {
       notes: [''],
     });
 
-    this.store.select(result => {
-      this.payees = result.payees.data;
-      this.tags = result.tags.data;
-      this.categories = result.categories.data;
-    }).pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe();
+    this.store.select(PayeeState.getSortedData)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result => this.payees = result);
+
+    this.store.select(TagState.getSortedData)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result => this.tags = result);
+
+    this.store.select(CategoryState.getSortedData)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(result => this.categories = result);
 
     this.store.select(AccountState.getSortedData)
       .pipe(
