@@ -12,6 +12,7 @@ import { Account } from 'src/app/accounts/models/account';
 import { ActivatedRoute } from '@angular/router';
 import { StoreService } from 'src/app/store/store.service';
 import { ActionsComponent } from 'src/app/core/components/actions/actions.component';
+import { AccountState } from 'src/app/accounts/store/store';
 
 @Component({
   selector: 'app-index',
@@ -51,7 +52,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   async ngOnInit() {
     this.storeService.getAccounts();
-    this.accounts = this.store.select(c => c.accounts.data)
+    this.accounts = this.store.select(AccountState.getSortedData)
       .pipe(
         takeUntil(this.ngUnsubscribe),
         tap(data => {
@@ -84,7 +85,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
     this.currentPage = 1;
     let request: TransactionSearch = {
       pageSize: this.pageSize,
-      accountId: this.selectedAccount.id,
+      account_id: this.selectedAccount.id,
       currentPage: this.currentPage
     };
     this.getData(request);
@@ -97,7 +98,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
     }
     const request: TransactionSearch = {
       pageSize: this.pageSize,
-      accountId: this.selectedAccount.id,
+      account_id: this.selectedAccount.id,
       currentPage: this.currentPage
     };
     this.getData(request);

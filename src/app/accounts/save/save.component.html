@@ -45,7 +45,7 @@
                           formControlName="accountType"
                           placeholder="Select Account Type"
                           [selectedText]="getName()">
-                <ion-select-option [value]="type.localId"
+                <ion-select-option [value]="type.local_id"
                                    *ngFor="let type of accountTypes">
                   {{type.name}}</ion-select-option>
               </ion-select>
@@ -185,6 +185,22 @@
             <span class="error"
                   *ngIf="isSubmitted && controls.excludeFromDashboard.errors?.remoteError">
               {{controls.excludeFromDashboard.errors.remoteError}}
+            </span>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12"
+                   size-lg="6">
+            <ion-item lines="full">
+              <ion-label>Is Active?</ion-label>
+              <ion-checkbox slot="start"
+                            formControlName="isActive"
+                            type="checkbox"></ion-checkbox>
+            </ion-item>
+
+            <span class="error"
+                  *ngIf="isSubmitted && controls.isActive.errors?.remoteError">
+              {{controls.isActive.errors.remoteError}}
             </span>
           </ion-col>
         </ion-row>

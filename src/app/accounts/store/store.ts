@@ -23,6 +23,14 @@ export class AccountState {
         return state.data;
     }
 
+    @Selector()
+    static getSortedData(state: AccountStateModel) {
+        if (state.data) {
+            return [...state.data].sort((a, b) => (a.name > b.name) ? 1 : -1);
+        }
+        return state.data;
+    }
+
     @Action(GetAccounts)
     get({ getState, setState }: StateContext<AccountStateModel>) {
 

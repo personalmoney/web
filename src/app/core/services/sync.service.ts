@@ -39,11 +39,6 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
                     return;
                 }
 
-                // #3 No need to create deleted records
-                if (record.is_deleted) {
-                    return;
-                }
-
                 // #4 created the new records
                 record.local_updated_time = record.updated_time;
                 await this.createLocalParms(record).toPromise();
@@ -95,10 +90,10 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
         record.local_id = localRecord.local_id;
         localRecord.id = record.id;
 
-        if (record.is_deleted) {
-            await super.deleteInLocal(record).toPromise();
-            return true;
-        }
+        // if (record.is_deleted) {
+        //     await super.deleteInLocal(record).toPromise();
+        //     return true;
+        // }
 
         if (localRecord.local_updated_time === record.updated_time) {
             return true;

@@ -1,0 +1,40 @@
+name: Dev Build and Deploy
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    environment:
+      name: DEV
+      url: https://dev.money.bhagavan.tech
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16.x
+
+      - run: npm install
+        name: Install packages
+
+      - run: npm run lint
+        name: Check Code
+
+      - name: Build and Deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          action: upload
+          app_location: /
+          output_location: www
+          app_build_command: npm run build-prod
+          azure_static_web_apps_api_token: ${{ secrets.SITE_TOKEN }}
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          APP_KEY: ${{ secrets.APP_KEY }}
