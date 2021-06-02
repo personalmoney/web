@@ -34,6 +34,7 @@ jobs:
           app_location: /
           output_location: www
           app_build_command: npm run build-prod
+          routes_location: .azure
           azure_static_web_apps_api_token: ${{ secrets.SITE_TOKEN }}
         env:
           APP_URL: ${{ secrets.APP_URL }}
