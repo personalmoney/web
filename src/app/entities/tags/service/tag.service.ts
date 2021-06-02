@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
   providedIn: 'root'
 })
 export class TagService extends SyncService<Tag> {
-  endpoint = 'Tag';
+  endpoint = 'tags';
   tableName = 'Tag';
 
   constructor(

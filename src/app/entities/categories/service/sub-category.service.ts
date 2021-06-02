@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SubCategoryService extends SyncService<SubCategory> {
 
-  endpoint = 'SubCategory';
+  endpoint = 'sub_categories';
   tableName = 'SubCategory';
 
   constructor(
@@ -25,31 +25,25 @@ export class SubCategoryService extends SyncService<SubCategory> {
     sqlite: SqLiteService
   ) {
     super(http, shared, authService, sqlite);
-    this.setRoute(0);
   }
 
   getRecords(categoryId: number): Observable<SubCategory[]> {
-    this.setRoute(categoryId);
     return this.getAll();
   }
 
   getRecord(categoryId: number, id: string): Observable<SubCategory> {
-    this.setRoute(categoryId);
     return super.get(id);
   }
 
   create(record: SubCategory): Observable<SubCategory> {
-    this.setRoute(record.categoryId);
     return super.create(record);
   }
 
   update(record: SubCategory): Observable<SubCategory> {
-    this.setRoute(record.categoryId);
     return super.update(record);
   }
 
   delete(record: SubCategory) {
-    this.setRoute(record.categoryId);
     return super.delete(record);
   }
 
@@ -62,10 +56,10 @@ export class SubCategoryService extends SyncService<SubCategory> {
   createLocalParms(record: SubCategory): Observable<SubCategory> {
     return this.checkCategoryId(record)
       .pipe(switchMap((data) => {
-        record.localCategoryId = data;
+        record.local_category_id = data;
         const query = `INSERT INTO ${this.tableName}(name,id,localCategoryId,createdTime,updatedTime,isDeleted,localUpdatedTime)
     Values(?,?,?,?,?,?,?)`;
-        const values = [record.name, record.id, record.localCategoryId, new Date(), record.updated_time, false, record.local_updated_time];
+        const values = [record.name, record.id, record.local_category_id, new Date(), record.updated_time, false, record.local_updated_time];
         return super.createLocal(record, query, values);
       }));
   }
@@ -73,7 +67,7 @@ export class SubCategoryService extends SyncService<SubCategory> {
   updateLocalParms(record: SubCategory) {
     return this.checkCategoryId(record)
       .pipe(switchMap((data) => {
-        record.localCategoryId = data;
+        record.local_category_id = data;
         const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
         const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
         return super.updateLocal(record, query, values);
@@ -84,18 +78,14 @@ export class SubCategoryService extends SyncService<SubCategory> {
     const selectQuery = `SELECT S.localId,S.localUpdatedTime,S.id,S.name,S.localCategoryId,S.createdTime,S.updatedTime,C.id as categoryId
     FROM SubCategory S
     INNER JOIN Category C ON S.localCategoryId=C.localId WHERE S.name=? and C.id=?`;
-    const id = [record.name, record.categoryId];
+    const id = [record.name, record.category_id];
     return await this.excuteQuery(record, selectQuery, id);
   }
 
-  private setRoute(categoryId: number) {
-    this.endpoint = `Category/${categoryId}/Subcategory`;
-  }
-
   checkCategoryId(record: SubCategory): Observable<number> {
-    if (record.localCategoryId) {
-      return of(record.localCategoryId);
+    if (record.local_category_id) {
+      return of(record.local_category_id);
     }
-    return from(this.categoryService.getLocalId(record.categoryId));
+    return from(this.categoryService.getLocalId(record.category_id));
   }
 }

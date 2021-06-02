@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Account } from '../models/account';
 import { AccountType } from 'src/app/entities/account-type/models/account-type';
 import { Store, Select } from '@ngxs/store';
-import { AddAccount, UpdateAccount } from '../store/actions';
+import { AddAccount, GetAccounts, UpdateAccount } from '../store/actions';
 import { AccountTypeState } from 'src/app/entities/account-type/store/store';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { StoreService } from 'src/app/store/store.service';
@@ -43,7 +43,7 @@ export class SaveComponent extends BaseForm implements OnInit {
 
   ngOnInit() {
     if (!this.account) {
-      this.account = { name: '', account_type_id: 0, include_in_balance: true, exclude_from_dashboard: false };
+      this.account = { name: '', account_type_id: 0, include_in_balance: true, exclude_from_dashboard: false, is_active: true };
     }
 
     this.accountTypes$
@@ -63,6 +63,7 @@ export class SaveComponent extends BaseForm implements OnInit {
       minimumBalance: [this.account.minimum_balance, [Validators.min(0)]],
       paymentDate: [this.account.payment_date, [Validators.max(31)]],
       excludeFromDashboard: [this.account.exclude_from_dashboard],
+      isActive: [this.account.is_active],
       notes: [this.account.notes]
     });
   }
@@ -89,6 +90,8 @@ export class SaveComponent extends BaseForm implements OnInit {
     model.payment_date = this.form.controls.paymentDate.value;
     model.exclude_from_dashboard = this.form.controls.excludeFromDashboard.value;
     model.notes = this.form.controls.notes.value;
+    model.is_active = this.form.controls.isActive.value;
+
     if (typeof (model.include_in_balance) === 'string') {
       model.include_in_balance = model.include_in_balance === 'true';
     }
@@ -109,6 +112,7 @@ export class SaveComponent extends BaseForm implements OnInit {
           this.handleErrors(err);
         },
         complete: () => {
+          this.store.dispatch(new GetAccounts());
           this.close(true);
         }
       });

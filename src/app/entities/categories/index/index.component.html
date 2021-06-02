@@ -9,12 +9,12 @@
 
 <ion-content [fullscreen]="true">
 
-  <ion-grid>
+  <ion-grid *ngIf="categories$ | async; let categories">
     <ion-row>
       <ion-col size="12"
                size-md="6"
                size-lg="6"
-               *ngFor="let category of (categories$ | async)">
+               *ngFor="let category of categories">
         <ion-item>
           <ion-grid>
             <ion-row>
@@ -47,7 +47,7 @@
                 <ion-row>
                   <ion-col (click)="showOptions($event, subCategory)"
                            size="12"
-                           *ngFor="let subCategory of category.subCategories">
+                           *ngFor="let subCategory of category.sub_categories">
                     {{subCategory.name}}
                   </ion-col>
                 </ion-row>
@@ -56,6 +56,11 @@
           </ion-grid>
         </ion-item>
 
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="categories.length <= 0">
+      <ion-col>
+        <p>No records found</p>
       </ion-col>
     </ion-row>
   </ion-grid>

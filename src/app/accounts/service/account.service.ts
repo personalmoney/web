@@ -6,7 +6,7 @@ import { Observable, from, of } from 'rxjs';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { AccountTypeService } from 'src/app/entities/account-type/service/account-type.service';
 import { SyncService } from 'src/app/core/services/sync.service';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Injectable({
@@ -25,6 +25,21 @@ export class AccountService extends SyncService<Account> {
     sqlite: SqLiteService
   ) {
     super(http, shared, authService, sqlite);
+  }
+
+  getAll(): Observable<Account[]> {
+    if (this.isweb) {
+      return from(this.authService.supabase.from('accounts_view').select('*'))
+        .pipe(map(response => response.data));
+    }
+    else {
+      return super.getAll();
+    }
+  }
+
+  update(record: Account): Observable<Account> {
+    delete record.balance;
+    return super.update(record);
   }
 
   createLocalParms(record: Account): Observable<Account> {

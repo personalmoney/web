@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
   providedIn: 'root'
 })
 export class PayeeService extends SyncService<Payee> {
-  endpoint = 'Payee';
+  endpoint = 'payees';
   tableName = 'Payee';
 
   constructor(

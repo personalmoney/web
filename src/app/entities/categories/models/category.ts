@@ -3,5 +3,5 @@ import { SubCategory } from './sub-category';
 
 export interface Category extends TimeModel {
     name: string;
-    subCategories: SubCategory[];
+    sub_categories: SubCategory[];
 }
