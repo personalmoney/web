@@ -1,3 +1,23 @@
+/* Delete Trigger function Start */
+
+CREATE 
+OR Replace FUNCTION trigger_record_delete() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+   -- trigger logic
+   IF OLD.id > 0 THEN
+		 INSERT INTO deleted_records(user_id,record_id,record_type,created_time)
+		 VALUES(OLD.user_id,OLD.id,TG_TABLE_NAME,now());
+	END IF;
+
+	RETURN OLD;
+
+END;
+$$;
+
+/* Delete Trigger function End */
 
 /* Account Types table Start */
 
@@ -308,28 +328,6 @@ END
 $$;
 
 /* Procedure for Transactions End */
-
-/* Delete Trigger function Start */
-
-CREATE 
-OR Replace FUNCTION trigger_record_delete() 
-   RETURNS TRIGGER 
-   LANGUAGE PLPGSQL
-AS $$
-BEGIN
-   -- trigger logic
-   IF OLD.id > 0 THEN
-		 INSERT INTO deleted_records(user_id,record_id,record_type,created_time)
-		 VALUES(OLD.user_id,OLD.id,TG_TABLE_NAME,now());
-	END IF;
-
-	RETURN OLD;
-
-END;
-$$
-
-/* Delete Trigger function End */
-
 
 /* Accounts View Start */
 
