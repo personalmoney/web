@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../core/helpers/base.component';
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPageComponent extends BaseComponent implements OnInit {
+export class LoginPageComponent extends BaseComponent {
 
   constructor(
     private authService: AuthService,
@@ -29,9 +29,6 @@ export class LoginPageComponent extends BaseComponent implements OnInit {
           this.shared.showMenu$.next(false);
         }
       });
-  }
-
-  async ngOnInit() {
   }
 
   async googleSignIn() {
