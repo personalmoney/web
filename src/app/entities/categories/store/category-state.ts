@@ -95,7 +95,8 @@ export class CategoryState {
     @ImmutableContext()
     addSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: AddSubCategory) {
         return this.subCategoryService.create(payload).pipe(tap((result) => {
-            const { index } = this.getCategory(getState, payload);
+            const state = getState();
+            const { index } = this.getCategory(state, payload);
             setState((state: CategoryStateModel) => {
                 if (!state.data[index].sub_categories) {
                     state.data[index].sub_categories = [];
@@ -110,7 +111,8 @@ export class CategoryState {
     @ImmutableContext()
     updateSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: UpdateSubCategory) {
         return this.subCategoryService.update(payload).pipe(tap((result) => {
-            const { category, index } = this.getCategory(getState, payload);
+            const state = getState();
+            const { category, index } = this.getCategory(state, payload);
             const dataIndex = category.sub_categories.findIndex(item => payload.local_id
                 ? (item.local_id === payload.local_id) : (item.id === payload.id));
             setState((state: CategoryStateModel) => {
@@ -124,7 +126,8 @@ export class CategoryState {
     @ImmutableContext()
     deleteSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: DeleteSubCategory) {
         return this.subCategoryService.delete(payload).pipe(tap(() => {
-            const { category, index } = this.getCategory(getState, payload);
+            const state = getState();
+            const { category, index } = this.getCategory(state, payload);
             let filteredArray;
             if (payload.id) {
                 filteredArray = category.sub_categories.filter(item => item.id !== payload.id);
@@ -132,16 +135,13 @@ export class CategoryState {
             else {
                 filteredArray = category.sub_categories.filter(item => item.local_id !== payload.local_id);
             }
+            state.data[index].sub_categories = filteredArray;
 
-            setState((state: CategoryStateModel) => {
-                state.data[index].sub_categories = filteredArray;
-                return state;
-            });
+            setState(s => state);
         }));
     }
 
-    private getCategory(getState: () => CategoryStateModel, payload: SubCategory) {
-        const state = getState();
+    private getCategory(state: CategoryStateModel, payload: SubCategory) {
         const dataList = [...state.data];
         const index = dataList.findIndex(item => payload.local_category_id
             ? (item.local_id === payload.local_category_id) : (item.id === payload.category_id));
