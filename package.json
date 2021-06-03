@@ -28,7 +28,7 @@
     "@capacitor/device": "^0.6.0",
     "@capacitor/haptics": "^0.3.8",
     "@capacitor/keyboard": "^1.0.0",
-    "@capacitor/network": "^0.4.8",
+    "@capacitor/network": "^1.0.0",
     "@fortawesome/angular-fontawesome": "^0.7.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
