@@ -479,7 +479,8 @@ OR replace function function_transactions_details(
   trans_number text,
   notes text,
   created_time timestamp with time zone,
-  updated_time timestamp with time zone
+  updated_time timestamp with time zone,
+  total_records bigint
 ) LANGUAGE plpgsql SECURITY INVOKER AS $$
 BEGIN
 RETURN QUERY select
@@ -501,7 +502,7 @@ RETURN QUERY select
   sc.name as sub_category_name,
   c.name as category_name,
   p.name as payee_name,
-  t.id,t.user_id,t.amount,t.trans_type,t.trans_date,t.to_amount,t.account_id,t.to_account_id,t.sub_category_id,t.payee_id,t.status,t.trans_number,t.notes,t.created_time,t.updated_time
+  t.id,t.user_id,t.amount,t.trans_type,t.trans_date,t.to_amount,t.account_id,t.to_account_id,t.sub_category_id,t.payee_id,t.status,t.trans_number,t.notes,t.created_time,t.updated_time,COUNT(*) OVER() AS total_records
 from
   transactions as t
   left join accounts fa on t.account_id = fa.id
