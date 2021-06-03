@@ -1,15 +1,15 @@
-name: Dev Build and Deploy
+name: Stage Build and Deploy
 
 on:
   push:
-    branches: [develop]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
   build_and_deploy:
     environment:
-      name: DEV
-      url: https://dev.money.bhagavan.tech
+      name: STAGE
+      url: https://stage.money.bhagavan.tech
     runs-on: ubuntu-latest
 
     steps:
