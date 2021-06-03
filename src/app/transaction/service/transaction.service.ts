@@ -10,6 +10,7 @@ import { TransactionView } from '../models/transaction-view';
 import { map } from 'rxjs/operators';
 import { PageResponse } from 'src/app/models/page-response';
 import { AuthService } from 'src/app/services/auth.service';
+import { SpinnerVisibilityService } from 'ng-http-loader';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +24,16 @@ export class TransactionService extends SyncService<Transaction> {
     http: HttpClient,
     sharedService: SharedService,
     authService: AuthService,
+    private spinner: SpinnerVisibilityService,
     sqlite: SqLiteService
   ) {
     super(http, sharedService, authService, sqlite);
   }
 
-  getTransactions(request: TransactionSearch): Observable<PageResponse<TransactionView>> {
+  async getTransactions(request: TransactionSearch): Promise<PageResponse<TransactionView>> {
     if (this.isweb) {
 
+      this.spinner.show();
       const pageResponse: PageResponse<TransactionView> = {
         totalRecords: 0,
         currentPage: request.currentPage,
@@ -40,24 +43,23 @@ export class TransactionService extends SyncService<Transaction> {
 
       const startIndex = (request.currentPage - 1) * request.pageSize;
 
-      const query = this.authService.supabase
+      const { data, error } = await this.authService.supabase
         .rpc('function_transactions_details', {
           from_account_id: request.account_id,
           start_index: startIndex,
           page_size: request.pageSize
         });
 
-      return from(query)
-        .pipe(map(response => {
-          pageResponse.records = response.data;
-          return pageResponse;
-        }));
+      pageResponse.records = data;
+      if (data && data.length > 0) {
+        pageResponse.totalRecords = data[0].total_records;
+      }
+      this.spinner.hide();
+      return pageResponse;
     }
     const query = this.getLocalParams();
-    return from(this.sqlite.query(query))
-      .pipe(map(result => {
-        return result.values as PageResponse<TransactionView>;
-      }));
+    this.spinner.hide();
+    return await this.sqlite.query(query) as PageResponse<TransactionView>;
   }
 
   create(record: Transaction): Observable<Transaction> {

@@ -96,6 +96,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
       event.target.disabled = true;
       return;
     }
+    this.currentPage = this.currentPage + 1;
     const request: TransactionSearch = {
       pageSize: this.pageSize,
       account_id: this.selectedAccount.id,
@@ -111,16 +112,14 @@ export class IndexComponent extends BaseComponent implements OnInit {
   private getData(request: TransactionSearch) {
 
     this.service.getTransactions(request)
-      .pipe(
-        tap((response) => {
-          const totalPages = Math.floor(response.totalRecords / response.pageSize);
+      .then(
+        (response) => {
+          const totalPages = Math.ceil(response.totalRecords / response.pageSize);
           this.totalPages = totalPages < 1 ? 1 : totalPages;
-          this.currentPage = response.currentPage + 1;
+
           this.transactions.push(...response.records);
           this.isLoading = false;
-        }),
-        takeUntil(this.ngUnsubscribe))
-      .subscribe();
+        });
   }
 
   async create() {
