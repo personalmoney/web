@@ -53,7 +53,9 @@ export class IndexComponent extends BaseComponent implements OnInit {
       $event.target.disabled = true;
       return;
     }
-    this.infiniteScroll.disabled = false;
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = false;
+    }
 
     const nextRecords = this.filteredPayees.slice(recordsCount, recordsCount + 30);
     this.displayedPayees.push(...nextRecords);
