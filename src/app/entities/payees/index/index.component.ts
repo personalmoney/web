@@ -6,8 +6,9 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { SaveComponent } from '../save/save.component';
 import { Store, Select } from '@ngxs/store';
 import { PayeeState } from '../store/store';
-import { GetPayees, DeletePayee } from '../store/actions';
+import { DeletePayee } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-index',
@@ -17,6 +18,9 @@ import { StoreService } from 'src/app/store/store.service';
 export class IndexComponent extends BaseComponent implements OnInit {
 
   @Select(PayeeState.getSortedData) payees$: Observable<Payee[]>;
+  payees: Payee[] = [];
+  filteredPayees: Payee[] = [];
+  currentSearchTerm: string = '';
 
   constructor(
     private store: Store,
@@ -29,6 +33,30 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.storeService.getPayees();
+
+    this.payees$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      tap((data) => {
+        if (data) {
+          this.payees = data;
+          this.doFilter();
+        }
+      })).subscribe();
+  }
+
+  filterItems($event) {
+    this.currentSearchTerm = $event.detail.value;
+    this.doFilter();
+  }
+
+  private doFilter() {
+    if (this.currentSearchTerm && this.currentSearchTerm.trim() !== '') {
+      this.filteredPayees = this.payees.filter((item) => {
+        return (item.name.toLowerCase().indexOf(this.currentSearchTerm) > -1);
+      });
+    } else {
+      this.filteredPayees = this.payees;
+    }
   }
 
   async create() {
