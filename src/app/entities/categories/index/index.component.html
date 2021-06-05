@@ -5,16 +5,23 @@
     </ion-buttons>
     <ion-title>Categories</ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-searchbar type="text"
+                     debounce="500"
+                     (ionChange)="filterItems($event)"></ion-searchbar>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
 
-  <ion-grid *ngIf="categories$ | async; let categories">
+  <ion-grid>
     <ion-row>
       <ion-col size="12"
                size-md="6"
                size-lg="6"
-               *ngFor="let category of categories">
+               *ngFor="let category of displayedCategories">
         <ion-item>
           <ion-grid>
             <ion-row>
@@ -58,13 +65,18 @@
 
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="categories.length <= 0">
+    <ion-row *ngIf="filteredCategories.length <= 0">
       <ion-col>
         <p>No records found</p>
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <ion-infinite-scroll threshold="100px"
+                       (ionInfinite)="loadMoreData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles"
+                                 loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   <ion-fab vertical="bottom"
            horizontal="end"
            slot="fixed">

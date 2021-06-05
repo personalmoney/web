@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
 import { Observable } from 'rxjs';
 import { Category } from '../models/category';
@@ -11,6 +11,9 @@ import { CategoryState } from '../store/category-state';
 import { Select, Store } from '@ngxs/store';
 import { DeleteCategory, DeleteSubCategory } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
+import { IonInfiniteScroll } from '@ionic/angular';
+import { takeUntil, tap } from 'rxjs/operators';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-index',
@@ -18,22 +21,97 @@ import { StoreService } from 'src/app/store/store.service';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent extends BaseComponent implements OnInit {
-
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @Select(CategoryState.getSortedData) categories$: Observable<Category[]>;
   selectedIds = [];
+  categories: Category[] = [];
+  filteredCategories: Category[] = [];
+  displayedCategories: Category[] = [];
+  currentSearchTerm: string = '';
 
   constructor(
     private store: Store,
     private alertController: AlertController,
     public popoverController: PopoverController,
     private storeService: StoreService,
+    platform: Platform,
     private modal: ModalController
   ) {
     super();
+    platform.ready().then(() => {
+      this.height = platform.height();
+      this.width = platform.width();
+    });
   }
 
   ngOnInit() {
     this.storeService.getCategories();
+    this.categories$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      tap((data) => {
+        if (data) {
+          this.categories = data;
+          this.doFilter();
+        }
+      })).subscribe();
+  }
+
+  filterItems($event) {
+    this.currentSearchTerm = $event.detail.value;
+    this.doFilter();
+  }
+
+  loadMoreData($event) {
+    const recordsCount = this.displayedCategories.length;
+    if (recordsCount >= this.filteredCategories.length) {
+      if ($event) {
+        $event.target.disabled = true;
+      }
+      return;
+    }
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = false;
+    }
+
+    let requiredRecords = Math.ceil(this.height / 50);
+    if (this.width > 768) {
+      requiredRecords = Math.ceil(this.height / 25);
+    }
+
+    const nextRecords = this.filteredCategories.slice(recordsCount, recordsCount + requiredRecords);
+    this.displayedCategories.push(...nextRecords);
+
+    if ($event) {
+      $event.target.complete();
+    }
+  }
+
+  private doFilter() {
+    if (this.currentSearchTerm && this.currentSearchTerm.trim() !== '') {
+      this.currentSearchTerm = this.currentSearchTerm.toLowerCase();
+      this.filteredCategories = this.categories.map((item) => {
+        let headerMatch = (item.name.toLowerCase().indexOf(this.currentSearchTerm) > -1);
+        if (headerMatch === true) {
+          return item;
+        }
+        let subMatch = false;
+        let result = Object.assign({}, item);
+        result.sub_categories = item.sub_categories.filter((sub_item) => {
+          return (sub_item.name.toLowerCase().indexOf(this.currentSearchTerm) > -1)
+        });
+        subMatch = result.sub_categories.length > 0;
+        if (subMatch === true) {
+          return result;
+        }
+        else {
+          return null;
+        }
+      }).filter(c => c != null);
+    } else {
+      this.filteredCategories = this.categories;
+    }
+    this.displayedCategories = [];
+    this.loadMoreData(null);
   }
 
   async create() {

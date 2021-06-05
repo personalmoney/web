@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
 import { Observable } from 'rxjs';
 import { Payee } from '../models/payee';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { SaveComponent } from '../save/save.component';
 import { Store, Select } from '@ngxs/store';
 import { PayeeState } from '../store/store';
@@ -29,9 +29,14 @@ export class IndexComponent extends BaseComponent implements OnInit {
     private store: Store,
     private alertController: AlertController,
     private storeService: StoreService,
+    platform: Platform,
     private modal: ModalController
   ) {
     super();
+    platform.ready().then(() => {
+      this.height = platform.height();
+      this.width = platform.width();
+    });
   }
 
   ngOnInit() {
@@ -58,8 +63,11 @@ export class IndexComponent extends BaseComponent implements OnInit {
     if (this.infiniteScroll) {
       this.infiniteScroll.disabled = false;
     }
-
-    const nextRecords = this.filteredPayees.slice(recordsCount, recordsCount + 30);
+    let requiredRecords = Math.ceil(this.height / 50);
+    if (this.width > 768) {
+      requiredRecords = Math.ceil(this.height / 25);
+    }
+    const nextRecords = this.filteredPayees.slice(recordsCount, recordsCount + requiredRecords);
     this.displayedPayees.push(...nextRecords);
 
     if ($event) {
