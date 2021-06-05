@@ -28,8 +28,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
   filteredCategories: Category[] = [];
   displayedCategories: Category[] = [];
   currentSearchTerm: string = '';
-  height = 500;
-  width = 500;
 
   constructor(
     private store: Store,

@@ -8,6 +8,8 @@ import { Subject } from 'rxjs';
 export class BaseComponent implements OnDestroy {
 
   ngUnsubscribe = new Subject<void>();
+  height = 500;
+  width = 500;
 
   constructor() { }
 
