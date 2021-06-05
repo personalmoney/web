@@ -9,6 +9,7 @@ import { Store, Select } from '@ngxs/store';
 import { DeleteTag } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
 import { IonInfiniteScroll } from '@ionic/angular';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-index',
@@ -34,6 +35,14 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.storeService.getTags();
+    this.tags$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      tap((data) => {
+        if (data) {
+          this.tags = data;
+          this.doFilter();
+        }
+      })).subscribe();
   }
 
   loadMoreData($event) {
