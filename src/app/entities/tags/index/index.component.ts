@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
 import { Observable } from 'rxjs';
 import { Tag } from '../models/tag';
@@ -8,6 +8,8 @@ import { TagState } from '../store/store';
 import { Store, Select } from '@ngxs/store';
 import { DeleteTag } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
+import { IonInfiniteScroll } from '@ionic/angular';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-index',
@@ -15,8 +17,12 @@ import { StoreService } from 'src/app/store/store.service';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent extends BaseComponent implements OnInit {
-
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @Select(TagState.getSortedData) tags$: Observable<Tag[]>;
+  tags: Tag[] = [];
+  filteredTags: Tag[] = [];
+  displayedTags: Tag[] = [];
+  currentSearchTerm: string = '';
 
   constructor(
     private store: Store,
@@ -29,6 +35,52 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.storeService.getTags();
+    this.tags$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      tap((data) => {
+        if (data) {
+          this.tags = data;
+          this.doFilter();
+        }
+      })).subscribe();
+  }
+
+  loadMoreData($event) {
+    const recordsCount = this.displayedTags.length;
+    if (recordsCount >= this.filteredTags.length) {
+      if ($event) {
+        $event.target.disabled = true;
+      }
+      return;
+    }
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = false;
+    }
+
+    const nextRecords = this.filteredTags.slice(recordsCount, recordsCount + 30);
+    this.displayedTags.push(...nextRecords);
+
+    if ($event) {
+      $event.target.complete();
+    }
+  }
+
+  filterItems($event) {
+    this.currentSearchTerm = $event.detail.value;
+    this.doFilter();
+  }
+
+  private doFilter() {
+    if (this.currentSearchTerm && this.currentSearchTerm.trim() !== '') {
+      this.currentSearchTerm = this.currentSearchTerm.toLowerCase();
+      this.filteredTags = this.tags.filter((item) => {
+        return (item.name.toLowerCase().indexOf(this.currentSearchTerm) > -1);
+      });
+    } else {
+      this.filteredTags = this.tags;
+    }
+    this.displayedTags = [];
+    this.loadMoreData(null);
   }
 
   async create() {
@@ -82,3 +134,4 @@ export class IndexComponent extends BaseComponent implements OnInit {
     await alert.present();
   }
 }
+
