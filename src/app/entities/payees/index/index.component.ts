@@ -72,6 +72,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   private doFilter() {
     if (this.currentSearchTerm && this.currentSearchTerm.trim() !== '') {
+      this.currentSearchTerm = this.currentSearchTerm.toLowerCase();
       this.filteredPayees = this.payees.filter((item) => {
         return (item.name.toLowerCase().indexOf(this.currentSearchTerm) > -1);
       });
