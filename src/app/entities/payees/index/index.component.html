@@ -11,37 +11,46 @@
   <ion-searchbar type="text"
                  debounce="500"
                  (ionChange)="filterItems($event)"></ion-searchbar>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12"
-               size-md="6"
-               size-lg="6"
-               *ngFor="let payee of filteredPayees">
-        <ion-item>
-          <ion-grid>
-            <ion-row>
-              <ion-col size="9">
-                {{payee.name}}
-              </ion-col>
-              <ion-col size="1.5">
-                <ion-icon (click)="edit(payee)"
-                          name="create-outline"></ion-icon>
-              </ion-col>
-              <ion-col size="1.5">
-                <ion-icon (click)="delete(payee)"
-                          name="trash-outline"></ion-icon>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="filteredPayees.length <= 0">
-      <ion-col>
-        <p>No records found</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <ion-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12"
+                 size-md="6"
+                 size-lg="6"
+                 *ngFor="let payee of displayedPayees">
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="9">
+                  {{payee.name}}
+                </ion-col>
+                <ion-col size="1.5">
+                  <ion-icon (click)="edit(payee)"
+                            name="create-outline"></ion-icon>
+                </ion-col>
+                <ion-col size="1.5">
+                  <ion-icon (click)="delete(payee)"
+                            name="trash-outline"></ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="filteredPayees.length <= 0">
+        <ion-col>
+          <p>No records found</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll threshold="100px"
+                         (ionInfinite)="loadMoreData($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles"
+                                   loadingText="Loading more data...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-content>
 
   <ion-fab vertical="bottom"
            horizontal="end"

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
 import { Observable } from 'rxjs';
 import { Payee } from '../models/payee';
@@ -9,6 +9,7 @@ import { PayeeState } from '../store/store';
 import { DeletePayee } from '../store/actions';
 import { StoreService } from 'src/app/store/store.service';
 import { takeUntil, tap } from 'rxjs/operators';
+import { IonInfiniteScroll } from '@ionic/angular';
 
 @Component({
   selector: 'app-index',
@@ -17,9 +18,11 @@ import { takeUntil, tap } from 'rxjs/operators';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   @Select(PayeeState.getSortedData) payees$: Observable<Payee[]>;
   payees: Payee[] = [];
   filteredPayees: Payee[] = [];
+  displayedPayees: Payee[] = [];
   currentSearchTerm: string = '';
 
   constructor(
@@ -44,6 +47,22 @@ export class IndexComponent extends BaseComponent implements OnInit {
       })).subscribe();
   }
 
+  loadMoreData($event) {
+    const recordsCount = this.displayedPayees.length;
+    if (recordsCount >= this.filteredPayees.length) {
+      $event.target.disabled = true;
+      return;
+    }
+    this.infiniteScroll.disabled = false;
+
+    const nextRecords = this.filteredPayees.slice(recordsCount, recordsCount + 30);
+    this.displayedPayees.push(...nextRecords);
+
+    if ($event) {
+      $event.target.complete();
+    }
+  }
+
   filterItems($event) {
     this.currentSearchTerm = $event.detail.value;
     this.doFilter();
@@ -57,6 +76,8 @@ export class IndexComponent extends BaseComponent implements OnInit {
     } else {
       this.filteredPayees = this.payees;
     }
+    this.displayedPayees = [];
+    this.loadMoreData(null);
   }
 
   async create() {
