@@ -39,7 +39,9 @@ export class IndexComponent extends BaseComponent implements OnInit {
   loadMoreData($event) {
     const recordsCount = this.displayedTags.length;
     if (recordsCount >= this.filteredTags.length) {
-      $event.target.disabled = true;
+      if ($event) {
+        $event.target.disabled = true;
+      }
       return;
     }
     if (this.infiniteScroll) {

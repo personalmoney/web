@@ -50,7 +50,9 @@ export class IndexComponent extends BaseComponent implements OnInit {
   loadMoreData($event) {
     const recordsCount = this.displayedPayees.length;
     if (recordsCount >= this.filteredPayees.length) {
-      $event.target.disabled = true;
+      if ($event) {
+        $event.target.disabled = true;
+      }
       return;
     }
     if (this.infiniteScroll) {
