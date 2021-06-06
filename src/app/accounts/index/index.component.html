@@ -8,30 +8,15 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid *ngIf="accounts$ | async; let accounts">
-    <ion-row>
-      <ion-col size="12"
-               size-md="6"
-               size-lg="6"
-               *ngFor="let account of accounts">
-        <ion-item>
-          <ion-grid>
-            <ion-row (click)="showOptions($event, account)">
-              <ion-col size="7">
-                {{account.name}}
-                <ion-icon *ngIf="!account.exclude_from_dashboard"
-                          name="eye-outline"></ion-icon>
-              </ion-col>
-              <ion-col size="5"
-                       [ngClass]="account.balance>=0?'positive':'negative'">
-                {{account.balance|currency}}
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="accounts.length <= 0">
+
+  <ion-grid class="content">
+    <app-account-list title="Active Accounts"
+                      [accounts]="activeAccounts"></app-account-list>
+
+    <app-account-list title="In-active Accounts"
+                      [accounts]="disabledAccounts"></app-account-list>
+
+    <ion-row *ngIf="activeAccounts.length <= 0 && disabledAccounts.length <= 0">
       <ion-col>
         <p>No records found</p>
       </ion-col>
