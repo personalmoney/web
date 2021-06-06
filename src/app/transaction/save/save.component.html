@@ -3,12 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/transactions"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isEdit ? "Edit Transaction":"New Transaction"}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-icon class="close-button"
-                (click)="save()"
-                name="checkmark-outline"></ion-icon>
-    </ion-buttons>
+    <ion-title>{{ isEdit ? "Edit ":"New "}} {{form.controls.type.value}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
