@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
@@ -12,10 +12,8 @@ import { StoreService } from 'src/app/store/store.service';
 import { SubCategory } from 'src/app/entities/categories/models/sub-category';
 import { Category } from 'src/app/entities/categories/models/category';
 import { TransactionService } from '../service/transaction.service';
-import { NavController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ModalController, NavController } from '@ionic/angular';
 import { TransactionView } from '../models/transaction-view';
-import { SpinnerVisibilityService } from 'ng-http-loader';
 import { AccountState } from 'src/app/accounts/store/store';
 import { PayeeState } from 'src/app/entities/payees/store/store';
 import { TagState } from 'src/app/entities/tags/store/store';
@@ -40,15 +38,15 @@ export class SaveComponent extends BaseForm implements OnInit {
   filteredCategories: SubCategory[] = [];
 
   isEdit = false;
-  transactionId = 0;
+  @Input() transactionId: number;
+  @Input() accountId: number;
 
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
     private service: TransactionService,
     private router: NavController,
-    private activeRoute: ActivatedRoute,
-    private spinner: SpinnerVisibilityService,
+    private modal: ModalController,
     private storeService: StoreService
   ) {
     super();
@@ -91,27 +89,18 @@ export class SaveComponent extends BaseForm implements OnInit {
         tap(data => {
           this.accounts = data;
 
-          this.activeRoute.paramMap
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((data2) => {
-              const accountId = +data2.get('accountId');
-              const id = data2.get('id');
-              if (accountId && data) {
-                const account = data.find(c => c.id == accountId);
-                this.form.patchValue({ account: account });
-              }
-              else if (id && data) {
-                this.getData(id);
-                this.isEdit = true;
-              }
+          if (this.accountId && data) {
+            const account = data.find(c => c.id == this.accountId);
+            this.form.patchValue({ account: account });
+          }
+          else if (this.transactionId && data) {
+            this.getData(this.transactionId.toLocaleString());
+            this.isEdit = true;
+          }
 
-            });
         })).subscribe();
 
     this.subCategories = [];
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 2000);
   }
 
   getData(id: string) {
@@ -120,7 +109,6 @@ export class SaveComponent extends BaseForm implements OnInit {
       .subscribe((data: TransactionView) => {
         if (data) {
           this.searchCategories({});
-          this.transactionId = data.id;
           this.form.patchValue({
             type: data.trans_type,
             date: new Date(data.trans_date).toISOString().slice(0, 10),
@@ -238,8 +226,13 @@ export class SaveComponent extends BaseForm implements OnInit {
         },
         complete: () => {
           this.storeService.getAccounts(true);
+          this.close();
           this.router.navigateRoot(['transactions/account', model.account_id]);
         }
       });
+  }
+
+  close(isSuccess: boolean = false) {
+    this.modal.dismiss(isSuccess, 'click');
   }
 }
