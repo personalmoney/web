@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
 import { Observable } from 'rxjs';
-import { AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { SaveComponent } from '../save/save.component';
 import { Account } from '../models/account';
-import { ActionsComponent } from 'src/app/core/components/actions/actions.component';
 import { AccountState } from '../store/store';
-import { Select, Store } from '@ngxs/store';
-import { DeleteAccount } from '../store/actions';
+import { Select } from '@ngxs/store';
 import { StoreService } from 'src/app/store/store.service';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-index',
@@ -18,10 +17,10 @@ import { StoreService } from 'src/app/store/store.service';
 export class IndexComponent extends BaseComponent implements OnInit {
 
   @Select(AccountState.getSortedData) accounts$: Observable<Account[]>;
+  activeAccounts: Account[] = [];
+  disabledAccounts: Account[] = [];
 
   constructor(
-    private store: Store,
-    private alertController: AlertController,
     private storeService: StoreService,
     public popoverController: PopoverController,
     private modal: ModalController
@@ -31,6 +30,14 @@ export class IndexComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.storeService.getAccounts();
+    this.accounts$.pipe(
+      takeUntil(this.ngUnsubscribe),
+      tap((data) => {
+        if (data) {
+          this.activeAccounts = data.filter(c => c.is_active);
+          this.disabledAccounts = data.filter(c => !c.is_active);
+        }
+      })).subscribe();
   }
 
   async create() {
@@ -50,54 +57,5 @@ export class IndexComponent extends BaseComponent implements OnInit {
     await dialog.onDidDismiss();
   }
 
-  async edit(account: Account) {
-    const modalConfig = {
-      component: SaveComponent,
-      showBackdrop: true,
-      backdropDismiss: false,
-      animated: true,
-      swipeToClose: true,
-      componentProps: {
-        account
-      }
-    };
-    await this.showDialog(modalConfig);
-  }
 
-  async delete(account: Account) {
-    const alert = await this.alertController.create({
-      header: 'Confirm!',
-      message: 'Are you sure you want to delete ' + account.name + '?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: 'Ok',
-          handler: () => {
-            this.store.dispatch(new DeleteAccount(account));
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async showOptions(event, account: Account) {
-    const popover = await this.popoverController.create({
-      component: ActionsComponent,
-      event,
-      translucent: true,
-      componentProps: {
-        editEvent: () => {
-          this.edit(account);
-        },
-        deleteEvent: () => {
-          this.delete(account);
-        }
-      }
-    });
-    return await popover.present();
-  }
 }
