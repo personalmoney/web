@@ -346,7 +346,7 @@ OR replace function function_accounts_view() RETURNS TABLE (
   credit_limit decimal,
   interest_rate decimal,
   notes text,
-  payment_date timestamp with time zone,
+  payment_date int,
   created_time timestamp with time zone,
   updated_time timestamp with time zone
 ) LANGUAGE plpgsql SECURITY INVOKER AS $$
