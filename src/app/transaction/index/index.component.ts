@@ -153,12 +153,10 @@ export class IndexComponent extends BaseComponent implements OnInit {
       event,
       translucent: true,
       componentProps: {
-        editEvent: () => {
-          this.edit(transaction);
-        },
-        deleteEvent: () => {
-          this.delete(transaction);
-        }
+        events: [
+          { label: 'Edit', action: () => { this.edit(transaction); } },
+          { label: 'Delete', action: () => { this.delete(transaction); } },
+        ]
       }
     });
     return await popover.present();
