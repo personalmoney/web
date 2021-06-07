@@ -124,6 +124,40 @@
 
       <ion-item lines="full"
                 *ngIf="this.form.controls.type.value!=='Transfer'">
+        <ion-label position="floating">Payee</ion-label>
+        <ionic-selectable #payeeComponent
+                          formControlName="payee"
+                          [items]="filteredPayees"
+                          placeholder="Select payee"
+                          itemValueField="id"
+                          itemTextField="name"
+                          [canSearch]="true"
+                          (onSearch)="searchPayees($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="payeeComponent.close()"
+                        style="font-size: 24px;"></ion-icon>
+              <ion-title>
+                Select Payee
+              </ion-title>
+            </ion-toolbar>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.payee.errors?.required">
+        Payee is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.payee.errors?.remoteError">
+        {{controls.payee.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Category</ion-label>
         <ionic-selectable #categoryComponent
                           formControlName="category"
@@ -164,40 +198,6 @@
       <span class="error ion-padding"
             *ngIf="isSubmitted && controls.category.errors?.remoteError">
         {{controls.category.errors.remoteError}}
-      </span>
-
-      <ion-item lines="full"
-                *ngIf="this.form.controls.type.value!=='Transfer'">
-        <ion-label position="floating">Payee</ion-label>
-        <ionic-selectable #payeeComponent
-                          formControlName="payee"
-                          [items]="filteredPayees"
-                          placeholder="Select payee"
-                          itemValueField="id"
-                          itemTextField="name"
-                          [canSearch]="true"
-                          (onSearch)="searchPayees($event)">
-          <ng-template ionicSelectableHeaderTemplate>
-            <ion-toolbar color="primary">
-              <ion-icon name="close-circle"
-                        class="close-button"
-                        slot="end"
-                        (click)="payeeComponent.close()"
-                        style="font-size: 24px;"></ion-icon>
-              <ion-title>
-                Select Payee
-              </ion-title>
-            </ion-toolbar>
-          </ng-template>
-        </ionic-selectable>
-      </ion-item>
-      <span class="error ion-padding"
-            *ngIf="isSubmitted && controls.payee.errors?.required">
-        Payee is required.
-      </span>
-      <span class="error ion-padding"
-            *ngIf="isSubmitted && controls.payee.errors?.remoteError">
-        {{controls.payee.errors.remoteError}}
       </span>
 
       <ion-item lines="full"
