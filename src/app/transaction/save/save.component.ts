@@ -40,6 +40,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   isEdit = false;
   @Input() transactionId: number;
   @Input() accountId: number;
+  @Input() oldTransactionId: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -94,8 +95,11 @@ export class SaveComponent extends BaseForm implements OnInit {
             this.form.patchValue({ account: account });
           }
           else if (this.transactionId && data) {
-            this.getData(this.transactionId.toLocaleString());
+            this.getData(this.transactionId.toString());
             this.isEdit = true;
+          }
+          else if (this.oldTransactionId && data) {
+            this.getData(this.oldTransactionId.toString());
           }
 
         })).subscribe();
@@ -121,6 +125,9 @@ export class SaveComponent extends BaseForm implements OnInit {
             notes: data.notes,
           });
           this.selectType(data.trans_type);
+          if (this.oldTransactionId > 0) {
+            this.form.patchValue({ date: new Date().toISOString().slice(0, 10), });
+          }
         }
       });
   }

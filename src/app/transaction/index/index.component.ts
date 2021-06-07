@@ -155,6 +155,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
       componentProps: {
         events: [
           { label: 'Edit', action: () => { this.edit(transaction); } },
+          { label: 'Duplicate', action: () => { this.duplicate(transaction); } },
           { label: 'Delete', action: () => { this.delete(transaction); } },
         ]
       }
@@ -163,7 +164,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
   }
 
   async edit(transaction: TransactionView) {
-    this.router.navigateForward(['transactions/edit', transaction.id]);
     const props = { transactionId: transaction.id };
     await this.showDialog(props);
   }
@@ -191,5 +191,10 @@ export class IndexComponent extends BaseComponent implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  async duplicate(transaction: TransactionView) {
+    const props = { oldTransactionId: transaction.id };
+    await this.showDialog(props);
   }
 }
