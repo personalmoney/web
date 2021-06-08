@@ -88,7 +88,8 @@
       <span class="label">Total balance</span>
       <span slot="end"
             class="total-balance"
-            [ngClass]="balance>=0?'positive':'negative'">{{balance|currency}}</span>
+            [ngClass]="selectedAccount && selectedAccount.balance >= 0?'positive':'negative'">{{(selectedAccount ?
+        selectedAccount.balance : 0) |currency}}</span>
     </ion-item>
   </ion-toolbar>
 </ion-footer>

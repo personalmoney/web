@@ -31,7 +31,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
   selectedAccountId: number;
   accounts: Observable<Account[]>;
   isLoading = false;
-  balance = 0;
 
   constructor(
     shared: SharedService,
@@ -81,7 +80,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
       return;
     }
     this.selectedAccountId = this.selectedAccount.id;
-    this.balance = this.selectedAccount.balance;
     this.isLoading = true;
     this.transactions = [];
     this.currentPage = 1;
