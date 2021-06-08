@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Account } from 'src/app/accounts/models/account';
 import { Transaction } from '../models/transaction';
 import { Payee } from 'src/app/entities/payees/models/payee';
@@ -38,9 +38,9 @@ export class SaveComponent extends BaseForm implements OnInit {
   filteredCategories: SubCategory[] = [];
 
   isEdit = false;
-  @Input() transactionId: number;
+  @Input() transaction: TransactionView;
   @Input() accountId: number;
-  @Input() oldTransactionId: number;
+  @Input() oldTransaction: TransactionView
 
   constructor(
     private formBuilder: FormBuilder,
@@ -72,64 +72,54 @@ export class SaveComponent extends BaseForm implements OnInit {
       notes: [''],
     });
 
-    this.store.select(PayeeState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.payees = result);
-
-    this.store.select(TagState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.tags = result);
-
-    this.store.select(CategoryState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.categories = result);
-
-    this.store.select(AccountState.getSortedData)
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        tap(data => {
-          this.accounts = data;
-
-          if (this.accountId && data) {
-            const account = data.find(c => c.id == this.accountId);
-            this.form.patchValue({ account: account });
-          }
-          else if (this.transactionId && data) {
-            this.getData(this.transactionId.toString());
-            this.isEdit = true;
-          }
-          else if (this.oldTransactionId && data) {
-            this.getData(this.oldTransactionId.toString());
-          }
-
-        })).subscribe();
-
     this.subCategories = [];
-  }
+    const obserable = [];
 
-  getData(id: string) {
-    this.service.get(id)
+    obserable.push(this.store.select(PayeeState.getSortedData));
+    obserable.push(this.store.select(TagState.getSortedData));
+    obserable.push(this.store.select(CategoryState.getSortedData));
+    obserable.push(this.store.select(AccountState.getSortedData));
+
+    combineLatest(obserable)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((data: TransactionView) => {
-        if (data) {
-          this.searchCategories({});
-          this.form.patchValue({
-            type: data.trans_type,
-            date: new Date(data.trans_date).toISOString().slice(0, 10),
-            account: this.accounts.find(d => d.id === data.account_id),
-            toAccount: this.accounts.find(d => d.id === data.to_account_id),
-            amount: data.amount,
-            category: this.subCategories.find(d => d.id === data.sub_category_id),
-            payee: this.payees.find(d => d.id === data.payee_id),
-            tags: data.tags,
-            notes: data.notes,
-          });
-          this.selectType(data.trans_type);
-          if (this.oldTransactionId > 0) {
-            this.form.patchValue({ date: new Date().toISOString().slice(0, 10), });
-          }
+      .subscribe(data => {
+        if (!data[0] || !data[1] || !data[2] || !data[3]) {
+          return;
+        }
+        this.payees = data[0] as Payee[];
+        this.tags = data[1] as Tag[];
+        this.categories = data[2] as Category[];
+        this.accounts = data[3] as Account[];
+
+        if (this.accountId && data) {
+          const account = this.accounts.find(c => c.id == this.accountId);
+          this.form.patchValue({ account: account });
+        }
+        else if (this.transaction && data) {
+          this.fillForm(this.transaction);
+          this.isEdit = true;
+        }
+        else if (this.oldTransaction && data) {
+          this.fillForm(this.oldTransaction);
+          this.form.patchValue({ date: new Date().toISOString().slice(0, 10), });
         }
       });
+  }
+
+  private fillForm(data: TransactionView) {
+    this.searchCategories({});
+    this.form.patchValue({
+      type: data.trans_type,
+      date: new Date(data.trans_date).toISOString().slice(0, 10),
+      account: this.accounts.find(d => d.id === data.account_id),
+      toAccount: this.accounts.find(d => d.id === data.to_account_id),
+      amount: data.amount,
+      category: this.subCategories.find(d => d.id === data.sub_category_id),
+      payee: this.payees.find(d => d.id === data.payee_id),
+      tags: data.tags,
+      notes: data.notes,
+    });
+    this.selectType(data.trans_type);
   }
 
   searchCategories($event) {
@@ -184,7 +174,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     }
 
     const model: Transaction = {
-      id: this.transactionId,
+      id: this.isEdit ? this.transaction.id : 0,
       account_id: this.form.controls.account.value.id,
       account_local_id: this.form.controls.account.value.localId,
       amount: this.form.controls.amount.value,

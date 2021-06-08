@@ -162,7 +162,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
   }
 
   async edit(transaction: TransactionView) {
-    const props = { transactionId: transaction.id };
+    const props = { transaction: transaction };
     await this.showDialog(props);
   }
 
@@ -192,7 +192,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
   }
 
   async duplicate(transaction: TransactionView) {
-    const props = { oldTransactionId: transaction.id };
+    const props = { oldTransaction: transaction };
     await this.showDialog(props);
   }
 }
