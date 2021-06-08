@@ -10,19 +10,24 @@
           (ngSubmit)="save()">
 
       <ion-item lines="full">
-        <ion-label>Type</ion-label>
-        <ion-icon class="type deposit"
-                  [ngClass]="this.form.controls.type.value==='Deposit'?'active':'in-active'"
-                  (click)="selectType('Deposit')"
-                  name="add-circle-outline"></ion-icon>
-        <ion-icon class="type withdraw"
-                  [ngClass]="this.form.controls.type.value==='Withdraw'?'active':'in-active'"
-                  (click)="selectType('Withdraw')"
-                  name="remove-circle-outline"></ion-icon>
-        <ion-icon class="type transfer"
-                  [ngClass]="this.form.controls.type.value==='Transfer'?'active':'in-active'"
-                  (click)="selectType('Transfer')"
-                  name="arrow-redo-outline"></ion-icon>
+        <ion-segment [value]="form.controls.type.value"
+                     (ionChange)="selectType($event)">
+          <ion-segment-button value="Deposit">
+            <ion-icon class="deposit"
+                      name="add-circle-outline"></ion-icon>
+            <ion-label class="deposit"> Deposit </ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Withdraw">
+            <ion-icon class="withdraw"
+                      name="remove-circle-outline"></ion-icon>
+            <ion-label class="withdraw">Withdraw</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="Transfer">
+            <ion-icon class="transfer"
+                      name="arrow-redo-outline"></ion-icon>
+            <ion-label class="transfer">Transfer</ion-label>
+          </ion-segment-button>
+        </ion-segment>
       </ion-item>
 
       <ion-item lines="full">

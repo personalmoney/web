@@ -119,7 +119,7 @@ export class SaveComponent extends BaseForm implements OnInit {
       tags: data.tags,
       notes: data.notes,
     });
-    this.selectType(data.trans_type);
+    this.selectType({ detail: { value: data.trans_type } });
   }
 
   searchCategories($event) {
@@ -151,7 +151,9 @@ export class SaveComponent extends BaseForm implements OnInit {
     return filteredRecords;
   }
 
-  selectType(value: string) {
+  selectType(event: any) {
+    const value = event.detail.value
+
     this.form.controls.type.setValue(value);
     if (value === 'Transfer') {
       this.form.controls.category.clearValidators();
