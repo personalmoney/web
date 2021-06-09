@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { AlertController, PopoverController, ModalController } from '@ionic/angular';
+import { AlertController, PopoverController, ModalController, NavController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { ActionsComponent } from 'src/app/core/components/actions/actions.component';
 import { SaveComponent } from 'src/app/accounts/save/save.component';
 import { Account } from '../../models/account';
 import { DeleteAccount } from '../../store/actions';
+import { IAction } from 'src/app/core/models/actions';
 
 @Component({
   selector: 'app-account-list',
@@ -24,6 +25,7 @@ export class AccountListComponent {
   constructor(private store: Store,
     private alertController: AlertController,
     public popoverController: PopoverController,
+    private router: NavController,
     private modal: ModalController
   ) { }
 
@@ -68,17 +70,17 @@ export class AccountListComponent {
   }
 
   async showOptions(event, account: Account) {
+
     const popover = await this.popoverController.create({
       component: ActionsComponent,
       event,
       translucent: true,
       componentProps: {
-        editEvent: () => {
-          this.edit(account);
-        },
-        deleteEvent: () => {
-          this.delete(account);
-        }
+        events: [
+          { label: 'Edit', action: () => { this.edit(account); } },
+          { label: 'Delete', action: () => { this.delete(account); } },
+          { label: 'View Transactions', action: () => { this.router.navigateRoot(['/transactions/account/', account.id]); } }
+        ]
       }
     });
     return await popover.present();

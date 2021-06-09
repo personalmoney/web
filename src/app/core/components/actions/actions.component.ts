@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { IAction } from '../../models/actions';
 
 @Component({
   selector: 'app-actions',
@@ -9,28 +10,15 @@ import { PopoverController } from '@ionic/angular';
 export class ActionsComponent {
 
   @Input()
-  editEvent: () => void;
-
-  @Input()
-  deleteEvent: () => void;
+  events: IAction[];
 
   constructor(
     public popoverController: PopoverController
   ) { }
 
-
-  edit() {
-    if (this.editEvent) {
-      this.editEvent();
-    }
-    this.close();
-  }
-
-  remove() {
-    if (this.deleteEvent) {
-      this.deleteEvent();
-    }
-    this.close();
+  invoke(event: IAction) {
+    event.action();
+    this.popoverController.dismiss();
   }
 
   close() {

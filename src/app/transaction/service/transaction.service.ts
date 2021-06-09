@@ -62,6 +62,12 @@ export class TransactionService extends SyncService<Transaction> {
     return await this.sqlite.query(query) as PageResponse<TransactionView>;
   }
 
+  async getCategories(id: number) {
+    const { data, error } = await this.authService.supabase.rpc('function_get_payee_categories',
+      { source_payee_id: id });
+    return data;
+  }
+
   create(record: Transaction): Observable<Transaction> {
     if (this.isweb) {
       return this.createOrUpdateRecord(record);

@@ -20,6 +20,7 @@ import { CoreModule } from './core/core.module';
 import { NgxsModule } from '@ngxs/store';
 import { SyncModule } from './sync/sync.module';
 import { NgHttpLoaderModule } from 'ng-http-loader';
+import { TransactionModule } from './transaction/transaction.module';
 
 @NgModule({
   declarations: [AppComponent, DashboardComponent],
@@ -29,6 +30,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
     IonicModule.forRoot(),
     HttpClientModule,
     AppRoutingModule,
+    TransactionModule,
     CoreModule,
     SyncModule,
     NgxsModule.forRoot([], {
