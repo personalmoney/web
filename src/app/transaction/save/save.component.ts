@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Account } from 'src/app/accounts/models/account';
 import { Transaction } from '../models/transaction';
 import { Payee } from 'src/app/entities/payees/models/payee';
@@ -12,10 +12,8 @@ import { StoreService } from 'src/app/store/store.service';
 import { SubCategory } from 'src/app/entities/categories/models/sub-category';
 import { Category } from 'src/app/entities/categories/models/category';
 import { TransactionService } from '../service/transaction.service';
-import { NavController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ModalController, NavController } from '@ionic/angular';
 import { TransactionView } from '../models/transaction-view';
-import { SpinnerVisibilityService } from 'ng-http-loader';
 import { AccountState } from 'src/app/accounts/store/store';
 import { PayeeState } from 'src/app/entities/payees/store/store';
 import { TagState } from 'src/app/entities/tags/store/store';
@@ -39,16 +37,20 @@ export class SaveComponent extends BaseForm implements OnInit {
   subCategories: SubCategory[] = [];
   filteredCategories: SubCategory[] = [];
 
+  recentCategories: SubCategory[] = [];
+  showRecent = true;
+
   isEdit = false;
-  transactionId = 0;
+  @Input() transaction: TransactionView;
+  @Input() accountId: number;
+  @Input() oldTransaction: TransactionView
 
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
     private service: TransactionService,
     private router: NavController,
-    private activeRoute: ActivatedRoute,
-    private spinner: SpinnerVisibilityService,
+    private modal: ModalController,
     private storeService: StoreService
   ) {
     super();
@@ -73,68 +75,55 @@ export class SaveComponent extends BaseForm implements OnInit {
       notes: [''],
     });
 
-    this.store.select(PayeeState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.payees = result);
-
-    this.store.select(TagState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.tags = result);
-
-    this.store.select(CategoryState.getSortedData)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(result => this.categories = result);
-
-    this.store.select(AccountState.getSortedData)
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        tap(data => {
-          this.accounts = data;
-
-          this.activeRoute.paramMap
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((data2) => {
-              const accountId = +data2.get('accountId');
-              const id = data2.get('id');
-              if (accountId && data) {
-                const account = data.find(c => c.id == accountId);
-                this.form.patchValue({ account: account });
-              }
-              else if (id && data) {
-                this.getData(id);
-                this.isEdit = true;
-              }
-
-            });
-        })).subscribe();
-
     this.subCategories = [];
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 2000);
-  }
+    const obserable = [];
 
-  getData(id: string) {
-    this.service.get(id)
+    obserable.push(this.store.select(PayeeState.getSortedData));
+    obserable.push(this.store.select(TagState.getSortedData));
+    obserable.push(this.store.select(CategoryState.getSortedData));
+    obserable.push(this.store.select(AccountState.getSortedData));
+
+    combineLatest(obserable)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((data: TransactionView) => {
-        if (data) {
-          this.searchCategories({});
-          this.transactionId = data.id;
-          this.form.patchValue({
-            type: data.trans_type,
-            date: new Date(data.trans_date).toISOString().slice(0, 10),
-            account: this.accounts.find(d => d.id === data.account_id),
-            toAccount: this.accounts.find(d => d.id === data.to_account_id),
-            amount: data.amount,
-            category: this.subCategories.find(d => d.id === data.sub_category_id),
-            payee: this.payees.find(d => d.id === data.payee_id),
-            tags: data.tags,
-            notes: data.notes,
-          });
-          this.selectType(data.trans_type);
+      .subscribe(data => {
+        if (!data[0] || !data[1] || !data[2] || !data[3]) {
+          return;
+        }
+        this.payees = data[0] as Payee[];
+        this.tags = data[1] as Tag[];
+        this.categories = data[2] as Category[];
+        this.accounts = data[3] as Account[];
+
+        this.searchCategories({});
+
+        if (this.accountId && data) {
+          const account = this.accounts.find(c => c.id == this.accountId);
+          this.form.patchValue({ account: account });
+        }
+        else if (this.transaction && data) {
+          this.fillForm(this.transaction);
+          this.isEdit = true;
+        }
+        else if (this.oldTransaction && data) {
+          this.fillForm(this.oldTransaction);
+          this.form.patchValue({ date: new Date().toISOString().slice(0, 10), });
         }
       });
+  }
+
+  private fillForm(data: TransactionView) {
+    this.form.patchValue({
+      type: data.trans_type,
+      date: new Date(data.trans_date).toISOString().slice(0, 10),
+      account: this.accounts.find(d => d.id === data.account_id),
+      toAccount: this.accounts.find(d => d.id === data.to_account_id),
+      amount: data.amount,
+      category: this.subCategories.find(d => d.id === data.sub_category_id),
+      payee: this.payees.find(d => d.id === data.payee_id),
+      tags: data.tags,
+      notes: data.notes,
+    });
+    this.selectType({ detail: { value: data.trans_type } });
   }
 
   searchCategories($event) {
@@ -166,7 +155,9 @@ export class SaveComponent extends BaseForm implements OnInit {
     return filteredRecords;
   }
 
-  selectType(value: string) {
+  selectType(event: any) {
+    const value = event.detail.value
+
     this.form.controls.type.setValue(value);
     if (value === 'Transfer') {
       this.form.controls.category.clearValidators();
@@ -189,7 +180,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     }
 
     const model: Transaction = {
-      id: this.transactionId,
+      id: this.isEdit ? this.transaction.id : 0,
       account_id: this.form.controls.account.value.id,
       account_local_id: this.form.controls.account.value.localId,
       amount: this.form.controls.amount.value,
@@ -238,8 +229,33 @@ export class SaveComponent extends BaseForm implements OnInit {
         },
         complete: () => {
           this.storeService.getAccounts(true);
+          this.close();
           this.router.navigateRoot(['transactions/account', model.account_id]);
         }
       });
+  }
+
+  close(isSuccess: boolean = false) {
+    this.modal.dismiss(isSuccess, 'click');
+  }
+
+  async findCategory(event) {
+    if (!event || !event.value || !event.value.id) {
+      return;
+    }
+    this.form.controls.category.reset();
+    this.recentCategories = [];
+    const result = await this.service.getCategories(event.value.id);
+    if (result.length == 1) {
+      const category = this.subCategories.find(c => result[0] === c.id);
+      this.form.patchValue({ category: category });
+    }
+    else if (result.length > 1) {
+      this.recentCategories = this.subCategories.filter(c => result.includes(c.id));
+    }
+  }
+
+  selectCategory($event) {
+    this.form.patchValue({ category: $event.detail.value });
   }
 }

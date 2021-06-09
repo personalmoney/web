@@ -1,5 +1,6 @@
 <ion-list>
   <ion-list-header>Actions</ion-list-header>
-  <ion-item button (click)="edit()">Edit</ion-item>
-  <ion-item button (click)="remove()">Delete</ion-item>
+  <ion-item *ngFor="let item of events"
+            button
+            (click)="invoke(item)">{{item.label}}</ion-item>
 </ion-list>

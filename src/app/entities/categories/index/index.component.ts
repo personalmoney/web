@@ -196,12 +196,10 @@ export class IndexComponent extends BaseComponent implements OnInit {
       event,
       translucent: true,
       componentProps: {
-        editEvent: () => {
-          this.editSubCategory(subCategory);
-        },
-        deleteEvent: () => {
-          this.deleteSubCategory(subCategory);
-        }
+        events: [
+          { label: 'Edit', action: () => { this.editSubCategory(subCategory); } },
+          { label: 'Delete', action: () => { this.deleteSubCategory(subCategory); } },
+        ]
       }
     });
     return await popover.present();

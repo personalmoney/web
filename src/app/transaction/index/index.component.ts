@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/core/helpers/base.component';
-import { AlertController, NavController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, NavController, PopoverController } from '@ionic/angular';
 import { TransactionView } from '../models/transaction-view';
 import { TransactionService } from '../service/transaction.service';
 import { TransactionSearch } from '../models/transaction-Search';
@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { StoreService } from 'src/app/store/store.service';
 import { ActionsComponent } from 'src/app/core/components/actions/actions.component';
 import { AccountState } from 'src/app/accounts/store/store';
+import { SaveComponent } from '../save/save.component';
 
 @Component({
   selector: 'app-index',
@@ -30,7 +31,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
   selectedAccountId: number;
   accounts: Observable<Account[]>;
   isLoading = false;
-  balance = 0;
 
   constructor(
     shared: SharedService,
@@ -39,6 +39,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private alertController: AlertController,
     private storeService: StoreService,
+    private modal: ModalController,
     public popoverController: PopoverController,
     private service: TransactionService
   ) {
@@ -79,7 +80,6 @@ export class IndexComponent extends BaseComponent implements OnInit {
       return;
     }
     this.selectedAccountId = this.selectedAccount.id;
-    this.balance = this.selectedAccount.balance;
     this.isLoading = true;
     this.transactions = [];
     this.currentPage = 1;
@@ -123,12 +123,26 @@ export class IndexComponent extends BaseComponent implements OnInit {
   }
 
   async create() {
-    this.router.navigateForward(['transactions/save/account', this.selectedAccount.id]);
+    const props = { accountId: this.selectedAccount.id };
+    await this.showDialog(props);
+  }
+
+  private async showDialog(props) {
+    const modalConfig = {
+      component: SaveComponent,
+      showBackdrop: true,
+      backdropDismiss: false,
+      animated: true,
+      swipeToClose: true,
+      componentProps: props
+    };
+    const dialog = await this.modal.create(modalConfig);
+    await dialog.present();
+    await dialog.onDidDismiss();
   }
 
   accountChange($event) {
     this.router.navigateRoot(['/transactions/account/', $event.target.value]);
-
   }
 
   async showOptions(event, transaction: TransactionView) {
@@ -137,19 +151,19 @@ export class IndexComponent extends BaseComponent implements OnInit {
       event,
       translucent: true,
       componentProps: {
-        editEvent: () => {
-          this.edit(transaction);
-        },
-        deleteEvent: () => {
-          this.delete(transaction);
-        }
+        events: [
+          { label: 'Edit', action: () => { this.edit(transaction); } },
+          { label: 'Duplicate', action: () => { this.duplicate(transaction); } },
+          { label: 'Delete', action: () => { this.delete(transaction); } },
+        ]
       }
     });
     return await popover.present();
   }
 
-  edit(transaction: TransactionView) {
-    this.router.navigateForward(['transactions/edit', transaction.id]);
+  async edit(transaction: TransactionView) {
+    const props = { transaction: transaction };
+    await this.showDialog(props);
   }
 
   async delete(transaction: TransactionView) {
@@ -175,5 +189,10 @@ export class IndexComponent extends BaseComponent implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  async duplicate(transaction: TransactionView) {
+    const props = { oldTransaction: transaction };
+    await this.showDialog(props);
   }
 }
