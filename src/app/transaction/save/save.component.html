@@ -1,14 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/transactions"></ion-back-button>
-    </ion-buttons>
-    <ion-title>{{ isEdit ? "Edit Transaction":"New Transaction"}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-icon class="close-button"
-                (click)="save()"
-                name="checkmark-outline"></ion-icon>
-    </ion-buttons>
+    <ion-title>{{ isEdit ? "Edit ":"New "}} {{form.controls.type.value}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -17,21 +9,24 @@
     <form [formGroup]="form"
           (ngSubmit)="save()">
 
-      <ion-item lines="full">
-        <ion-label>Type</ion-label>
-        <ion-icon class="type deposit"
-                  [ngClass]="this.form.controls.type.value==='Deposit'?'active':'in-active'"
-                  (click)="selectType('Deposit')"
-                  name="add-circle-outline"></ion-icon>
-        <ion-icon class="type withdraw"
-                  [ngClass]="this.form.controls.type.value==='Withdraw'?'active':'in-active'"
-                  (click)="selectType('Withdraw')"
-                  name="remove-circle-outline"></ion-icon>
-        <ion-icon class="type transfer"
-                  [ngClass]="this.form.controls.type.value==='Transfer'?'active':'in-active'"
-                  (click)="selectType('Transfer')"
-                  name="arrow-redo-outline"></ion-icon>
-      </ion-item>
+      <ion-segment [value]="form.controls.type.value"
+                   (ionChange)="selectType($event)">
+        <ion-segment-button value="Deposit">
+          <ion-icon class="deposit"
+                    name="add-circle-outline"></ion-icon>
+          <ion-label class="deposit"> Deposit </ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="Withdraw">
+          <ion-icon class="withdraw"
+                    name="remove-circle-outline"></ion-icon>
+          <ion-label class="withdraw">Withdraw</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="Transfer">
+          <ion-icon class="transfer"
+                    name="arrow-redo-outline"></ion-icon>
+          <ion-label class="transfer">Transfer</ion-label>
+        </ion-segment-button>
+      </ion-segment>
 
       <ion-item lines="full">
         <ion-label position="floating">Date</ion-label>
@@ -132,50 +127,6 @@
 
       <ion-item lines="full"
                 *ngIf="this.form.controls.type.value!=='Transfer'">
-        <ion-label position="floating">Category</ion-label>
-        <ionic-selectable #categoryComponent
-                          formControlName="category"
-                          [items]="filteredCategories"
-                          placeholder="Select category"
-                          itemValueField="id"
-                          itemTextField="name"
-                          groupValueField="category_id"
-                          groupTextField="category_name"
-                          [canSearch]="true"
-                          (onSearch)="searchCategories($event)">
-          <ng-template ionicSelectableHeaderTemplate>
-            <ion-toolbar color="primary">
-              <ion-icon name="close-circle"
-                        class="close-button"
-                        slot="end"
-                        (click)="categoryComponent.close()">
-              </ion-icon>
-              <ion-title>
-                Select Category
-              </ion-title>
-            </ion-toolbar>
-          </ng-template>
-          <ng-template ionicSelectableGroupTemplate
-                       let-group="group">
-            <span class="cat-group">{{group.text}}</span>
-          </ng-template>
-          <ng-template ionicSelectableValueTemplate
-                       let-category="value">
-            {{category.category_name}} / {{category.name}}
-          </ng-template>
-        </ionic-selectable>
-      </ion-item>
-      <span class="error ion-padding"
-            *ngIf="isSubmitted && controls.category.errors?.required">
-        Category is required.
-      </span>
-      <span class="error ion-padding"
-            *ngIf="isSubmitted && controls.category.errors?.remoteError">
-        {{controls.category.errors.remoteError}}
-      </span>
-
-      <ion-item lines="full"
-                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Payee</ion-label>
         <ionic-selectable #payeeComponent
                           formControlName="payee"
@@ -183,6 +134,8 @@
                           placeholder="Select payee"
                           itemValueField="id"
                           itemTextField="name"
+                          [hasVirtualScroll]="true"
+                          (onChange)="findCategory($event)"
                           [canSearch]="true"
                           (onSearch)="searchPayees($event)">
           <ng-template ionicSelectableHeaderTemplate>
@@ -210,6 +163,71 @@
 
       <ion-item lines="full"
                 *ngIf="this.form.controls.type.value!=='Transfer'">
+        <ion-label position="floating">Category</ion-label>
+        <ionic-selectable #categoryComponent
+                          formControlName="category"
+                          [items]="filteredCategories"
+                          placeholder="Select category"
+                          itemValueField="id"
+                          itemTextField="name"
+                          groupValueField="category_id"
+                          groupTextField="category_name"
+                          [canSearch]="true"
+                          (onSearch)="searchCategories($event)">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar color="primary">
+              <ion-icon name="close-circle"
+                        class="close-button"
+                        slot="end"
+                        (click)="categoryComponent.close()">
+              </ion-icon>
+              <ion-title>
+                Select Category
+              </ion-title>
+            </ion-toolbar>
+            <ion-item *ngIf="recentCategories.length>0"
+                      (click)="showRecent=!showRecent">
+              <ion-icon slot="start"
+                        *ngIf="!showRecent"
+                        name="chevron-forward-outline"></ion-icon>
+              <ion-icon slot="start"
+                        *ngIf="showRecent"
+                        name="chevron-down-outline"></ion-icon>
+              <span class="category-header">Categories of payee: {{form.controls.payee.value.name}}</span>
+            </ion-item>
+            <ion-radio-group *ngIf="recentCategories.length>0 && showRecent"
+                             formControlName="category"
+                             (ionChange)="categoryComponent.close();selectCategory($event)">
+
+              <ion-item *ngFor="let category of recentCategories">
+                <ion-radio slot="start"
+                           [value]="category"></ion-radio>
+                <ion-label>{{category.category_name}} / {{category.name}}</ion-label>
+              </ion-item>
+            </ion-radio-group>
+
+          </ng-template>
+          <ng-template ionicSelectableGroupTemplate
+                       let-group="group">
+            <span class="cat-group">{{group.text}}</span>
+          </ng-template>
+          <ng-template ionicSelectableValueTemplate
+                       let-category="value">
+            {{category.category_name}} / {{category.name}}
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.category.errors?.required">
+        Category is required.
+      </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.category.errors?.remoteError">
+        {{controls.category.errors.remoteError}}
+      </span>
+
+      <ion-item lines="full"
+                *ngIf="this.form.controls.type.value!=='Transfer'">
         <ion-label position="floating">Tags</ion-label>
         <ionic-selectable #tagComponent
                           formControlName="tags"
@@ -217,6 +235,7 @@
                           [isMultiple]="true"
                           placeholder="Select tag(s)"
                           itemValueField="id"
+                          [hasVirtualScroll]="true"
                           itemTextField="name"
                           [canSearch]="true"
                           (onSearch)="searchTags($event)">
@@ -258,3 +277,22 @@
     </form>
   </ion-content>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button type="button"
+                      color="light"
+                      (click)="close()"
+                      expand="block">Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button type="submit"
+                      (click)="save()"
+                      expand="block">Submit</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

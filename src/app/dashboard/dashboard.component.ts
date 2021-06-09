@@ -5,12 +5,13 @@ import { Account } from '../accounts/models/account';
 import { SharedService } from '../core/services/shared.service';
 import { combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { StoreService } from '../store/store.service';
 import { Store } from '@ngxs/store';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { AccountState } from '../accounts/store/store';
 import { AccountTypeState } from '../entities/account-type/store/store';
+import { SaveComponent } from '../transaction/save/save.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,6 +30,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     private router: NavController,
     private storeService: StoreService,
     private store: Store,
+    private modal: ModalController,
     private spinner: SpinnerVisibilityService,
     private shared: SharedService
   ) {
@@ -95,8 +97,17 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     });
   }
 
-  create() {
-    this.router.navigateForward(['transactions/save']);
+  async create() {
+    const modalConfig = {
+      component: SaveComponent,
+      showBackdrop: true,
+      backdropDismiss: false,
+      animated: true,
+      swipeToClose: true,
+    };
+    const dialog = await this.modal.create(modalConfig);
+    await dialog.present();
+    await dialog.onDidDismiss();
   }
 
   showTrans(id: number) {
