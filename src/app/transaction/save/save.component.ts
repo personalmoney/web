@@ -37,6 +37,9 @@ export class SaveComponent extends BaseForm implements OnInit {
   subCategories: SubCategory[] = [];
   filteredCategories: SubCategory[] = [];
 
+  recentCategories: SubCategory[] = [];
+  showRecent = true;
+
   isEdit = false;
   @Input() transaction: TransactionView;
   @Input() accountId: number;
@@ -91,6 +94,8 @@ export class SaveComponent extends BaseForm implements OnInit {
         this.categories = data[2] as Category[];
         this.accounts = data[3] as Account[];
 
+        this.searchCategories({});
+
         if (this.accountId && data) {
           const account = this.accounts.find(c => c.id == this.accountId);
           this.form.patchValue({ account: account });
@@ -107,7 +112,6 @@ export class SaveComponent extends BaseForm implements OnInit {
   }
 
   private fillForm(data: TransactionView) {
-    this.searchCategories({});
     this.form.patchValue({
       type: data.trans_type,
       date: new Date(data.trans_date).toISOString().slice(0, 10),
@@ -233,5 +237,25 @@ export class SaveComponent extends BaseForm implements OnInit {
 
   close(isSuccess: boolean = false) {
     this.modal.dismiss(isSuccess, 'click');
+  }
+
+  async findCategory(event) {
+    if (!event || !event.value || !event.value.id) {
+      return;
+    }
+    this.form.controls.category.reset();
+    this.recentCategories = [];
+    const result = await this.service.getCategories(event.value.id);
+    if (result.length == 1) {
+      const category = this.subCategories.find(c => result[0] === c.id);
+      this.form.patchValue({ category: category });
+    }
+    else if (result.length > 1) {
+      this.recentCategories = this.subCategories.filter(c => result.includes(c.id));
+    }
+  }
+
+  selectCategory($event) {
+    this.form.patchValue({ category: $event.detail.value });
   }
 }

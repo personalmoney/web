@@ -135,6 +135,7 @@
                           itemValueField="id"
                           itemTextField="name"
                           [hasVirtualScroll]="true"
+                          (onChange)="findCategory($event)"
                           [canSearch]="true"
                           (onSearch)="searchPayees($event)">
           <ng-template ionicSelectableHeaderTemplate>
@@ -184,6 +185,27 @@
                 Select Category
               </ion-title>
             </ion-toolbar>
+            <ion-item *ngIf="recentCategories.length>0"
+                      (click)="showRecent=!showRecent">
+              <ion-icon slot="start"
+                        *ngIf="!showRecent"
+                        name="chevron-forward-outline"></ion-icon>
+              <ion-icon slot="start"
+                        *ngIf="showRecent"
+                        name="chevron-down-outline"></ion-icon>
+              <span class="category-header">Categories of payee: {{form.controls.payee.value.name}}</span>
+            </ion-item>
+            <ion-radio-group *ngIf="recentCategories.length>0 && showRecent"
+                             formControlName="category"
+                             (ionChange)="categoryComponent.close();selectCategory($event)">
+
+              <ion-item *ngFor="let category of recentCategories">
+                <ion-radio slot="start"
+                           [value]="category"></ion-radio>
+                <ion-label>{{category.category_name}} / {{category.name}}</ion-label>
+              </ion-item>
+            </ion-radio-group>
+
           </ng-template>
           <ng-template ionicSelectableGroupTemplate
                        let-group="group">
