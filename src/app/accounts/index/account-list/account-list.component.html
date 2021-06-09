@@ -1,0 +1,35 @@
+<ion-row *ngIf="accounts && accounts.length > 0">
+    <ion-col (click)="showRecords=!showRecords"
+             id="header">
+        <ion-item>
+            <ion-icon *ngIf="!showRecords"
+                      name="chevron-forward-outline"></ion-icon>
+            <ion-icon *ngIf="showRecords"
+                      name="chevron-down-outline"></ion-icon>
+            {{title}} ( {{accounts.length}} )
+        </ion-item>
+    </ion-col>
+</ion-row>
+<ion-row *ngIf="showRecords"
+         class="padding-left">
+    <ion-col size="12"
+             size-md="6"
+             size-lg="6"
+             *ngFor="let account of accounts">
+        <ion-item>
+            <ion-grid>
+                <ion-row (click)="showOptions($event, account)">
+                    <ion-col size="7">
+                        {{account.name}}
+                        <ion-icon *ngIf="!account.exclude_from_dashboard"
+                                  name="eye-outline"></ion-icon>
+                    </ion-col>
+                    <ion-col size="5"
+                             [ngClass]="account.balance>=0?'positive':'negative'">
+                        {{account.balance|currency}}
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-item>
+    </ion-col>
+</ion-row>

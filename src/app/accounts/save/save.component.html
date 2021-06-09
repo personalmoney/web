@@ -204,23 +204,27 @@
             </span>
           </ion-col>
         </ion-row>
-
-        <ion-row>
-          <ion-col>
-            <ion-button type="button"
-                        size="small"
-                        color="light"
-                        (click)="close()"
-                        expand="block">Cancel</ion-button>
-          </ion-col>
-          <ion-col>
-            <ion-button type="submit"
-                        size="small"
-                        expand="block">Submit</ion-button>
-          </ion-col>
-        </ion-row>
       </ion-grid>
     </form>
   </ion-content>
 
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button type="button"
+                      color="light"
+                      (click)="close()"
+                      expand="block">Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button type="submit"
+                      (click)="save()"
+                      expand="block">Submit</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
