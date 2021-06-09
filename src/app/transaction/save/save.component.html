@@ -134,6 +134,7 @@
                           placeholder="Select payee"
                           itemValueField="id"
                           itemTextField="name"
+                          [hasVirtualScroll]="true"
                           [canSearch]="true"
                           (onSearch)="searchPayees($event)">
           <ng-template ionicSelectableHeaderTemplate>
@@ -212,6 +213,7 @@
                           [isMultiple]="true"
                           placeholder="Select tag(s)"
                           itemValueField="id"
+                          [hasVirtualScroll]="true"
                           itemTextField="name"
                           [canSearch]="true"
                           (onSearch)="searchTags($event)">
