@@ -4,15 +4,14 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { MenuItem } from './models/menu-item';
-import { environment } from 'src/environments/environment';
 import { SharedService } from './core/services/shared.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { Meta } from '@angular/platform-browser';
 import { SqLiteService } from './core/services/sq-lite.service';
 import { SchemaService } from './core/services/schema.service';
 import { AuthService } from './services/auth.service';
 import { NavigationEnd, Router } from '@angular/router';
+import { Device } from '@capacitor/device';
 
 @Component({
   selector: 'app-root',
@@ -91,13 +90,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.sharedService.showMenu$
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         this.showMenu = result;
       });
     this.getUserName();
+
+    const info = await Device.getInfo();
+    this.sharedService.isWeb = info.platform === 'web';
   }
 
   async getUserName() {
