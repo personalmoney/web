@@ -22,22 +22,16 @@ export class SaveComponent extends BaseForm implements OnInit {
   @Input()
   account: Account;
   accountTypes: AccountType[] = [];
-  isWeb = false;
   @Select(AccountTypeState.getSortedData) accountTypes$: Observable<AccountType[]>;
 
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
     private storeService: StoreService,
-    shared: SharedService,
+    private shared: SharedService,
     private modal: ModalController
   ) {
     super();
-    shared.isWeb
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(c => {
-        this.isWeb = c;
-      });
     this.storeService.getAccountTypes();
   }
 
@@ -54,7 +48,7 @@ export class SaveComponent extends BaseForm implements OnInit {
 
     this.form = this.formBuilder.group({
       name: [this.account.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      accountType: [this.isWeb ? this.account.account_type_id : this.account.account_type_local_id,
+      accountType: [this.shared.isWeb ? this.account.account_type_id : this.account.account_type_local_id,
       [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       creditLimit: [this.account.credit_limit, [Validators.min(0)]],
       includeInBalance: [this.account.include_in_balance, [Validators.required]],
@@ -76,7 +70,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     const model = { ...this.account };
 
     model.name = this.form.controls.name.value;
-    if (this.isWeb) {
+    if (this.shared.isWeb) {
       model.account_type_id = this.form.controls.accountType.value;
     } else {
       model.account_type_local_id = this.form.controls.accountType.value;
@@ -134,7 +128,7 @@ export class SaveComponent extends BaseForm implements OnInit {
       return;
     }
     const value = this.form.controls.accountType.value;
-    const type = this.accountTypes.find(c => this.isWeb ? c.id === value : c.local_id === value);
+    const type = this.accountTypes.find(c => this.shared.isWeb ? c.id === value : c.local_id === value);
     return type ? type.name : '';
   }
 

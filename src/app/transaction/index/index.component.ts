@@ -7,7 +7,6 @@ import { TransactionView } from '../models/transaction-view';
 import { TransactionService } from '../service/transaction.service';
 import { TransactionSearch } from '../models/transaction-Search';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
 import { Account } from 'src/app/accounts/models/account';
 import { ActivatedRoute } from '@angular/router';
 import { StoreService } from 'src/app/store/store.service';
@@ -22,18 +21,17 @@ import { SaveComponent } from '../save/save.component';
 })
 export class IndexComponent extends BaseComponent implements OnInit {
 
-  isWeb = false;
   currentPage = 1;
   pageSize = 100;
   totalPages = 0;
   transactions: TransactionView[] = [];
   selectedAccount: Account;
   selectedAccountId: number;
-  accounts: Observable<Account[]>;
+  accounts: Account[] = [];
   isLoading = false;
 
   constructor(
-    shared: SharedService,
+    public shared: SharedService,
     private store: Store,
     private router: NavController,
     private activeRoute: ActivatedRoute,
@@ -44,19 +42,19 @@ export class IndexComponent extends BaseComponent implements OnInit {
     private service: TransactionService
   ) {
     super();
-    shared.isWeb
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(c => {
-        this.isWeb = c;
-      });
   }
 
   async ngOnInit() {
     this.storeService.getAccounts();
-    this.accounts = this.store.select(AccountState.getSortedData)
+    this.store.select(AccountState.getSortedData)
       .pipe(
         takeUntil(this.ngUnsubscribe),
         tap(data => {
+          if (!data || data.length <= 0) {
+            return;
+          }
+
+          this.accounts = data;
 
           this.activeRoute.paramMap
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -72,7 +70,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
                 this.loadInitialData();
               }
             });
-        }));
+        })).subscribe();
   }
 
   loadInitialData() {

@@ -22,7 +22,7 @@ export class TransactionService extends SyncService<Transaction> {
 
   constructor(
     http: HttpClient,
-    sharedService: SharedService,
+    private sharedService: SharedService,
     authService: AuthService,
     private spinner: SpinnerVisibilityService,
     sqlite: SqLiteService
@@ -31,7 +31,7 @@ export class TransactionService extends SyncService<Transaction> {
   }
 
   async getTransactions(request: TransactionSearch): Promise<PageResponse<TransactionView>> {
-    if (this.isweb) {
+    if (this.sharedService.isWeb) {
 
       this.spinner.show();
       const pageResponse: PageResponse<TransactionView> = {
@@ -69,7 +69,7 @@ export class TransactionService extends SyncService<Transaction> {
   }
 
   create(record: Transaction): Observable<Transaction> {
-    if (this.isweb) {
+    if (this.sharedService.isWeb) {
       return this.createOrUpdateRecord(record);
     }
     else {
@@ -78,7 +78,7 @@ export class TransactionService extends SyncService<Transaction> {
   }
 
   update(record: Transaction): Observable<Transaction> {
-    if (this.isweb) {
+    if (this.sharedService.isWeb) {
       return this.createOrUpdateRecord(record);
     }
     else {
