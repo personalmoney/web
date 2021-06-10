@@ -9,7 +9,7 @@
               (change)="accountChange($event)">
         <option [value]="account.id"
                 [selected]="account.id === selectedAccountId"
-                *ngFor="let account of (accounts | async)">{{account.name}}</option>
+                *ngFor="let account of accounts">{{account.name}}</option>
       </select>
     </ion-buttons>
   </ion-toolbar>
@@ -93,4 +93,4 @@
     </ion-item>
   </ion-toolbar>
 </ion-footer>
-<app-sync [isWeb]="isWeb"></app-sync>
+<app-sync [isWeb]="shared.isWeb"></app-sync>

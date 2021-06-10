@@ -25,11 +25,12 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-@import "./theme/font-opensans.css";
+@import "./theme/libre-franklin.css";
+
 :root,
 :root[mode="md"],
 :root[mode="ios"] {
-    --ion-font-family: "Open Sans", sans-serif;
+    --ion-font-family: "Libre Franklin", sans-serif;
     font-family: var(--ion-font-family) !important;
     font-weight: 400;
 }

@@ -10,7 +10,6 @@ import { AuthService } from 'src/app/services/auth.service';
 export abstract class CrudService<T extends TimeModel> {
   abstract endpoint = '';
   abstract tableName = '';
-  isweb;
   currentUserId = '';
 
   constructor(
@@ -19,9 +18,6 @@ export abstract class CrudService<T extends TimeModel> {
     protected authService: AuthService,
     protected sqlite: SqLiteService
   ) {
-    shared.isWeb.subscribe(data => {
-      this.isweb = data;
-    });
     authService.currentUser.subscribe(d => {
       if (d) {
         this.currentUserId = d.id;
@@ -37,7 +33,7 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   getAll(forceRefresh = false, queryString: string = '*'): Observable<T[]> {
-    if (this.isweb || forceRefresh) {
+    if (this.shared.isWeb || forceRefresh) {
       return from(this.authService.supabase.from(this.endpoint).select(queryString))
         .pipe(map(response => response.data));
     }
@@ -59,7 +55,7 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   create(record: T): Observable<T> {
-    if (this.isweb) {
+    if (this.shared.isWeb) {
       return this.createRequest(record);
     }
     else if (this.shared.isOnline) {
@@ -93,7 +89,7 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   update(record: T): Observable<T> {
-    if (this.isweb) {
+    if (this.shared.isWeb) {
       return this.updateRequest(record);
     }
     else if (this.shared.isOnline && record.id) {
@@ -130,7 +126,7 @@ export abstract class CrudService<T extends TimeModel> {
   }
 
   delete(record: T) {
-    if (this.isweb) {
+    if (this.shared.isWeb) {
       return this.deleteRequest(record);
     }
     else if (this.shared.isOnline && record.id) {

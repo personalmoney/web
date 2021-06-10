@@ -40,7 +40,7 @@
                    size-lg="6">
             <ion-item lines="full">
               <ion-label position="floating">Account Type</ion-label>
-              <ion-select *ngIf="!isWeb"
+              <ion-select *ngIf="!shared.isWeb"
                           interface="popover"
                           formControlName="accountType"
                           placeholder="Select Account Type"
@@ -49,7 +49,7 @@
                                    *ngFor="let type of accountTypes">
                   {{type.name}}</ion-select-option>
               </ion-select>
-              <ion-select *ngIf="isWeb"
+              <ion-select *ngIf="shared.isWeb"
                           interface="popover"
                           formControlName="accountType"
                           placeholder="Select Account Type"
