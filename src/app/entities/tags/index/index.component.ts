@@ -28,17 +28,17 @@ export class IndexComponent extends BaseComponent implements OnInit {
     private store: Store,
     private alertController: AlertController,
     private storeService: StoreService,
-    platform: Platform,
+    private platform: Platform,
     private modal: ModalController
   ) {
     super();
-    platform.ready().then(() => {
-      this.height = platform.height();
-      this.width = platform.width();
-    });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.platform.ready();
+    this.height = this.platform.height();
+    this.width = this.platform.width();
+
     this.storeService.getTags();
     this.tags$.pipe(
       takeUntil(this.ngUnsubscribe),
