@@ -28,7 +28,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     private formBuilder: FormBuilder,
     private store: Store,
     private storeService: StoreService,
-    private shared: SharedService,
+    public shared: SharedService,
     private modal: ModalController
   ) {
     super();
