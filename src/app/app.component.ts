@@ -55,7 +55,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: 'About',
-      url: 'folder/About',
+      url: 'about',
       icon: 'info-circle'
     }
   ];
