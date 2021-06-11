@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>About</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-ios"
+             [fullscreen]="true">
+
+
+    <ion-card>
+        <div class="ion-text-center">
+            <img width="150"
+                 height="150"
+                 src="/assets/logo.png" />
+        </div>
+
+        <ion-card-header>
+            <ion-card-title>Personal Money</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+            This is a personal expense tracking application build with Ionic, Angular and Supabase
+        </ion-card-content>
+
+        <ion-card-content>
+            Current version is {{vesion}}
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>
