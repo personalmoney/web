@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "npm --no-git-tag-version version patch",
+    "add-version": "npm --no-git-tag-version version from-git -f",
     "build": "ng build",
     "build-prod": "npm run config && ng build --prod",
     "config": "npm install -g ts-node && ts-node ./resources/config.mjs",
@@ -42,8 +42,6 @@
     "@ngxs-labs/immer-adapter": "^3.0.5",
     "@ngxs/store": "^3.7.2",
     "@supabase/supabase-js": "^1.11.17",
-    "cacheable-lookup": "^6.0.0",
-    "http2-wrapper": "^1.0.0-beta.5.2",
     "immer": "^9.0.2",
     "ionic-selectable": "^4.7.1",
     "ng-http-loader": "9.0",
