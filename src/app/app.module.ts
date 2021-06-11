@@ -21,9 +21,10 @@ import { NgxsModule } from '@ngxs/store';
 import { SyncModule } from './sync/sync.module';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { TransactionModule } from './transaction/transaction.module';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent],
+  declarations: [AppComponent, DashboardComponent, AboutComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

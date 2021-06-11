@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "npm --no-git-tag-version version patch",
     "build": "ng build",
     "build-prod": "npm run config && ng build --prod",
     "config": "npm install -g ts-node && ts-node ./resources/config.mjs",
