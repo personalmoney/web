@@ -1,8 +1,8 @@
 {
   "name": "personal-money",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "author": "Bhagavan Reddy",
-  "homepage": "https://github.com/personalmoney",
+  "homepage": "https://github.com/personalmoney/app-supabase",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
