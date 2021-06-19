@@ -4,7 +4,6 @@ import { BaseComponent } from '../core/helpers/base.component';
 import { Account } from '../accounts/models/account';
 import { SharedService } from '../core/services/shared.service';
 import { combineLatest } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { ModalController, NavController } from '@ionic/angular';
 import { StoreService } from '../store/store.service';
 import { Store } from '@ngxs/store';
@@ -24,7 +23,6 @@ export class DashboardComponent extends BaseComponent implements OnInit {
   accountTypes: AccountType[] = [];
   totalBalance = 0;
   dashboardData: any[] = [];
-  isWeb = false;
 
   constructor(
     private router: NavController,
@@ -32,14 +30,9 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     private store: Store,
     private modal: ModalController,
     private spinner: SpinnerVisibilityService,
-    private shared: SharedService
+    public shared: SharedService
   ) {
     super();
-    shared.isWeb
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(c => {
-        this.isWeb = c;
-      });
   }
 
   ngOnInit() {
@@ -65,7 +58,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
     this.accountTypes.map(c => {
       let currentAccounts;
-      if (this.isWeb) {
+      if (this.shared.isWeb) {
         currentAccounts = this.accounts.filter(d => d.account_type_id === c.id
           && d.exclude_from_dashboard === false
           && d.is_active === true);

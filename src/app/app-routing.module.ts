@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AboutComponent } from './about/about.component';
 import { AuthGuard } from './core/guards/auth.gaurd';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
@@ -11,6 +12,7 @@ const routes: Routes = [
     component: DashboardComponent,
     canLoad: [AuthGuard]
   },
+  { path: 'about', component: AboutComponent, canLoad: [AuthGuard] },
   {
     path: 'accounts',
     loadChildren: () => import('./accounts/accounts.module').then(m => m.AccountsModule),

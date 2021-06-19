@@ -28,7 +28,7 @@ export class AccountService extends SyncService<Account> {
   }
 
   getAll(): Observable<Account[]> {
-    if (this.isweb) {
+    if (this.shared.isWeb) {
       return from(this.authService.supabase.from('accounts_view').select('*'))
         .pipe(map(response => response.data));
     }
