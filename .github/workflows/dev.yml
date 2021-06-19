@@ -27,9 +27,6 @@ jobs:
       - run: npm run lint
         name: Check Code
 
-      - run: npm run add-version
-        name: Update version
-
       - name: Build and Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
