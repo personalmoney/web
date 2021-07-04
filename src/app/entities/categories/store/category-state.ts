@@ -39,13 +39,13 @@ export class CategoryState {
     @Action(GetCategories)
     get({ getState, setState }: StateContext<CategoryStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddCategory)

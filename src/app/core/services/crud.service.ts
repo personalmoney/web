@@ -32,16 +32,14 @@ export abstract class CrudService<T extends TimeModel> {
     return `SELECT * FROM ${this.tableName} WHERE isDeleted='${this.shared.falseValue}'`;
   }
 
-  getAll(forceRefresh = false, queryString: string = '*'): Observable<T[]> {
+  async getAll(forceRefresh = false, queryString: string = '*'): Promise<T[]> {
     if (this.shared.isWeb || forceRefresh) {
-      return from(this.authService.supabase.from(this.endpoint).select(queryString))
-        .pipe(map(response => response.data));
+      const response = await this.authService.supabase.from(this.endpoint).select(queryString);
+      return response.data;
     }
     const query = this.getLocalParams();
-    return from(this.sqlite.query(query))
-      .pipe(map(result => {
-        return result.values as T[];
-      }));
+    const result = await this.sqlite.query(query);
+    return result.values as T[];
   }
 
   getModifiedData(syncTime: Date): Observable<T[]> {
@@ -49,9 +47,12 @@ export abstract class CrudService<T extends TimeModel> {
       .pipe(map(response => response.data));
   }
 
-  get(id: string): Observable<T> {
-    return from(this.authService.supabase.from(this.endpoint).select('*').match({ id }))
-      .pipe(map(response => response.data[0]));
+  async get(id: string): Promise<T> {
+    const response = await this.authService.supabase.from(this.endpoint).select('*').match({ id });
+    if (response.data && response.data.length > 0) {
+      return response.data[0];
+    }
+    return null;
   }
 
   create(record: T): Observable<T> {

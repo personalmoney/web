@@ -4,6 +4,7 @@ import { AccountTypeService } from '../service/account-type.service';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { AddAccountType, GetAccountTypes, UpdateAccountType, DeleteAccountType } from './actions';
+import { from } from 'rxjs';
 
 export class AccountTypeStateModel {
     data: AccountType[];
@@ -34,15 +35,15 @@ export class AccountTypeState {
     }
 
     @Action(GetAccountTypes)
-    get({ getState, setState }: StateContext<AccountTypeStateModel>) {
-        return this.service.getAll().pipe(tap((result) => {
-            const state = getState();
-            setState({
-                ...state,
-                data: result,
-            });
-        }));
+    async get({ getState, setState }: StateContext<AccountTypeStateModel>) {
+        const result = await this.service.getAll();
+        const state = getState();
+        setState({
+            ...state,
+            data: result,
+        });
     }
+
 
     @Action(AddAccountType)
     add({ getState, patchState }: StateContext<AccountTypeStateModel>, { payload }: AddAccountType) {

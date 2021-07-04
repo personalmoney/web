@@ -6,7 +6,7 @@ import { Observable, from, of } from 'rxjs';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { AccountTypeService } from 'src/app/entities/account-type/service/account-type.service';
 import { SyncService } from 'src/app/core/services/sync.service';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Injectable({
@@ -27,13 +27,13 @@ export class AccountService extends SyncService<Account> {
     super(http, shared, authService, sqlite);
   }
 
-  getAll(): Observable<Account[]> {
+  async getAll(): Promise<Account[]> {
     if (this.shared.isWeb) {
-      return from(this.authService.supabase.from('accounts_view').select('*'))
-        .pipe(map(response => response.data));
+      const response = await this.authService.supabase.from('accounts_view').select('*');
+      return response.data;
     }
     else {
-      return super.getAll();
+      return await super.getAll();
     }
   }
 

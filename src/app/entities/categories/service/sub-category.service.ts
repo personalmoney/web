@@ -27,12 +27,12 @@ export class SubCategoryService extends SyncService<SubCategory> {
     super(http, shared, authService, sqlite);
   }
 
-  getRecords(categoryId: number): Observable<SubCategory[]> {
-    return this.getAll();
+  async getRecords(categoryId: number): Promise<SubCategory[]> {
+    return await this.getAll();
   }
 
-  getRecord(categoryId: number, id: string): Observable<SubCategory> {
-    return super.get(id);
+  async getRecord(categoryId: number, id: string): Promise<SubCategory> {
+    return await super.get(id);
   }
 
   create(record: SubCategory): Observable<SubCategory> {

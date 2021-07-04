@@ -34,13 +34,13 @@ export class TagState {
     @Action(GetTags)
     get({ getState, setState }: StateContext<TagStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddTag)

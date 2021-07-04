@@ -34,13 +34,13 @@ export class AccountState {
     @Action(GetAccounts)
     get({ getState, setState }: StateContext<AccountStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddAccount)

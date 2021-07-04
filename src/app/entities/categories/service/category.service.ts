@@ -25,25 +25,21 @@ export class CategoryService extends SyncService<Category> {
     super(http, shared, authService, sqlite);
   }
 
-  getAll() {
+  async getAll() {
     if (this.shared.isWeb) {
-      return super.getAll(false, `*,sub_categories(id,name,category_id)`);
+      return await super.getAll(false, `*,sub_categories(id,name,category_id)`);
     }
-    return super.getAll()
-      .pipe(
-        switchMap(data => {
-          const query = `SELECT S.localId,S.localUpdatedTime,S.id,S.name,S.localCategoryId,S.createdTime,S.updatedTime,C.id as categoryId
+    const data = await super.getAll();
+
+    const query = `SELECT S.localId,S.localUpdatedTime,S.id,S.name,S.localCategoryId,S.createdTime,S.updatedTime,C.id as categoryId
           FROM SubCategory S
           INNER JOIN Category C ON S.localCategoryId=C.localId WHERE S.isDeleted='${this.shared.falseValue}'`;
-          return from(this.sqlite.query(query))
-            .pipe(map(result => {
-              const values = result.values as SubCategory[];
-              data.forEach(d => {
-                d.sub_categories = values.filter(f => f.local_category_id === d.local_id);
-              });
-              return data;
-            }));
-        }));
+    const result = await this.sqlite.query(query);
+    const values = result.values as SubCategory[];
+    data.forEach(d => {
+      d.sub_categories = values.filter(f => f.local_category_id === d.local_id);
+    });
+    return data;
   }
 
   createLocalParms(record: Category): Observable<Category> {
