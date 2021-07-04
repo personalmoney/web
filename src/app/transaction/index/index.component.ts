@@ -177,8 +177,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
           text: 'Ok',
           handler: () => {
             this.service.delete(transaction)
-              .pipe(takeUntil(this.ngUnsubscribe))
-              .subscribe(data => {
+              .then(data => {
                 this.storeService.getAccounts(true);
                 this.loadInitialData();
               });

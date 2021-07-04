@@ -35,16 +35,16 @@ export class SubCategoryService extends SyncService<SubCategory> {
     return await super.get(id);
   }
 
-  create(record: SubCategory): Observable<SubCategory> {
-    return super.create(record);
+  async create(record: SubCategory): Promise<SubCategory> {
+    return await super.create(record);
   }
 
-  update(record: SubCategory): Observable<SubCategory> {
-    return super.update(record);
+  async update(record: SubCategory): Promise<SubCategory> {
+    return await super.update(record);
   }
 
-  delete(record: SubCategory) {
-    return super.delete(record);
+  async delete(record: SubCategory) {
+    return await super.delete(record);
   }
 
   getLocalParams(): string {
@@ -53,25 +53,21 @@ export class SubCategoryService extends SyncService<SubCategory> {
     INNER JOIN Category C ON S.localCategoryId=C.localId WHERE S.isDeleted='${this.shared.falseValue}'`;
   }
 
-  createLocalParms(record: SubCategory): Observable<SubCategory> {
-    return this.checkCategoryId(record)
-      .pipe(switchMap((data) => {
-        record.local_category_id = data;
-        const query = `INSERT INTO ${this.tableName}(name,id,localCategoryId,createdTime,updatedTime,isDeleted,localUpdatedTime)
+  async createLocalParms(record: SubCategory): Promise<SubCategory> {
+    const data = await this.checkCategoryId(record);
+    record.local_category_id = data;
+    const query = `INSERT INTO ${this.tableName}(name,id,localCategoryId,createdTime,updatedTime,isDeleted,localUpdatedTime)
     Values(?,?,?,?,?,?,?)`;
-        const values = [record.name, record.id, record.local_category_id, new Date(), record.updated_time, false, record.local_updated_time];
-        return super.createLocal(record, query, values);
-      }));
+    const values = [record.name, record.id, record.local_category_id, new Date(), record.updated_time, false, record.local_updated_time];
+    return await super.createLocal(record, query, values);
   }
 
-  updateLocalParms(record: SubCategory) {
-    return this.checkCategoryId(record)
-      .pipe(switchMap((data) => {
-        record.local_category_id = data;
-        const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
-        const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
-        return super.updateLocal(record, query, values);
-      }));
+  async updateLocalParms(record: SubCategory) {
+    const data = await this.checkCategoryId(record);
+    record.local_category_id = data;
+    const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
+    const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
+    return await super.updateLocal(record, query, values);
   }
 
   async findByName(record: SubCategory) {
@@ -82,10 +78,10 @@ export class SubCategoryService extends SyncService<SubCategory> {
     return await this.excuteQuery(record, selectQuery, id);
   }
 
-  checkCategoryId(record: SubCategory): Observable<number> {
+  async checkCategoryId(record: SubCategory): Promise<number> {
     if (record.local_category_id) {
-      return of(record.local_category_id);
+      return record.local_category_id;
     }
-    return from(this.categoryService.getLocalId(record.category_id));
+    return await this.categoryService.getLocalId(record.category_id);
   }
 }

@@ -42,15 +42,15 @@ export class CategoryService extends SyncService<Category> {
     return data;
   }
 
-  createLocalParms(record: Category): Observable<Category> {
+  async createLocalParms(record: Category): Promise<Category> {
     const query = `INSERT INTO ${this.tableName}(name,id,createdTime,updatedTime,isDeleted,localUpdatedTime) Values(?,?,?,?,?,?)`;
     const values = [record.name, record.id, new Date(), record.updated_time, false, record.local_updated_time];
-    return super.createLocal(record, query, values);
+    return await super.createLocal(record, query, values);
   }
 
-  updateLocalParms(record: Category) {
+  async updateLocalParms(record: Category) {
     const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
     const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
-    return super.updateLocal(record, query, values);
+    return await super.updateLocal(record, query, values);
   }
 }

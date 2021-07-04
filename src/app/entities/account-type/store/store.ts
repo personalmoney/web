@@ -48,17 +48,17 @@ export class AccountTypeState {
     @Action(AddAccountType)
     add({ getState, patchState }: StateContext<AccountTypeStateModel>, { payload }: AddAccountType) {
         return this.service.create(payload)
-            .pipe(tap(result => {
+            .then(result => {
                 const state = getState();
                 patchState({
                     data: [...state.data, result]
                 });
-            }));
+            });
     }
 
     @Action(UpdateAccountType)
     update({ getState, setState }: StateContext<AccountTypeStateModel>, { payload }: UpdateAccountType) {
-        return this.service.update(payload).pipe(tap((result) => {
+        return this.service.update(payload).then((result) => {
             const state = getState();
             const dataList = [...state.data];
             const dataIndex = dataList.findIndex(item => payload.local_id ? (item.local_id === payload.local_id) : (item.id === payload.id));
@@ -67,12 +67,12 @@ export class AccountTypeState {
                 ...state,
                 data: dataList,
             });
-        }));
+        });
     }
 
     @Action(DeleteAccountType)
     delete({ getState, setState }: StateContext<AccountTypeStateModel>, { payload }: DeleteAccountType) {
-        return this.service.delete(payload).pipe(tap(() => {
+        return this.service.delete(payload).then(() => {
             const state = getState();
             let filteredArray;
             if (payload.id) {
@@ -85,6 +85,6 @@ export class AccountTypeState {
                 ...state,
                 data: filteredArray,
             });
-        }));
+        });
     }
 }

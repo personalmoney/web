@@ -1,7 +1,5 @@
-import { Observable, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from './sq-lite.service';
-import { map, switchMap } from 'rxjs/operators';
 import { Utils } from '../helpers/utils';
 import { TimeModel } from 'src/app/models/time-model';
 import { SharedService } from './shared.service';
@@ -25,8 +23,8 @@ export abstract class CrudService<T extends TimeModel> {
     });
   }
 
-  abstract createLocalParms(record: T): Observable<T>;
-  abstract updateLocalParms(record: T): Observable<T>;
+  abstract createLocalParms(record: T): Promise<T>;
+  abstract updateLocalParms(record: T): Promise<T>;
 
   getLocalParams(): string {
     return `SELECT * FROM ${this.tableName} WHERE isDeleted='${this.shared.falseValue}'`;
@@ -55,108 +53,105 @@ export abstract class CrudService<T extends TimeModel> {
     return null;
   }
 
-  create(record: T): Observable<T> {
+  async create(record: T): Promise<T> {
     if (this.shared.isWeb) {
-      return this.createRequest(record);
+      return await this.createRequest(record);
     }
     else if (this.shared.isOnline) {
-      return this.createRequest(record)
-        .pipe(switchMap(data => {
-          record.id = data.id;
-          record.updated_time = record.local_updated_time = data.updated_time;
-          return this.createLocalParms(record);
-        }));
+      const data = await this.createRequest(record);
+      record.id = data.id;
+      record.updated_time = record.local_updated_time = data.updated_time;
+      return await this.createLocalParms(record);
     }
     else {
       record.local_updated_time = Utils.getTime();
-      return this.createLocalParms(record);
+      return await this.createLocalParms(record);
     }
   }
 
-  private createRequest(record: T): Observable<T> {
+  private async createRequest(record: T): Promise<T> {
     record.created_time = record.updated_time = new Date();
     record.user_id = this.currentUserId;
-    return from(this.authService.supabase.from(this.endpoint).insert(record))
-      .pipe(map(response => response.data[0]));
+    const { data, error } = await this.authService.supabase.from(this.endpoint).insert(record);
+    if (data && data.length > 0) {
+      return data[0];
+    }
+    throw error;
   }
 
-  protected createLocal(record: T, query: string, values: any[]) {
-    return from(
-      this.sqlite.run(query, values))
-      .pipe(map(data => {
-        record.local_id = data.changes.lastId;
-        return record;
-      }));
+  protected async createLocal(record: T, query: string, values: any[]) {
+    const data = await this.sqlite.run(query, values);
+    record.local_id = data.changes.lastId;
+    return record;
   }
 
-  update(record: T): Observable<T> {
+  async update(record: T): Promise<T> {
     if (this.shared.isWeb) {
-      return this.updateRequest(record);
+      return await this.updateRequest(record);
     }
     else if (this.shared.isOnline && record.id) {
-      return this.updateRequest(record)
-        .pipe(switchMap(data => {
-          record.updated_time = record.local_updated_time = data.updated_time;
-          return this.updateLocalParms(record);
-        }));
+      const data = await this.updateRequest(record);
+      record.updated_time = record.local_updated_time = data.updated_time;
+      return await this.updateLocalParms(record);
     }
     else {
       record.local_updated_time = Utils.getTime();
-      return this.updateLocalParms(record);
+      return await this.updateLocalParms(record);
     }
   }
 
-  private updateRequest(record: T): Observable<T> {
+  private async updateRequest(record: T): Promise<T> {
     delete record.created_time;
     record.updated_time = new Date();
     const id = record.id.toString();
 
-    return from(this.authService.supabase.from(this.endpoint).update(record).match({ id }))
-      .pipe(map(response => response.data[0]));
+    const { data, error } = await this.authService.supabase.from(this.endpoint).update(record).match({ id });
+    if (data && data.length > 0) {
+      return data[0];
+    }
+    throw error;
   }
 
-  protected updateLocal(record: T, query: string, values: any[]) {
-    return from(
-      this.sqlite.run(query, values))
-      .pipe(map(data => {
-        if (data.changes.changes > 0) {
-          return record;
-        }
-        return null;
-      }));
+  protected async updateLocal(record: T, query: string, values: any[]) {
+    const data = await this.sqlite.run(query, values);
+    if (data.changes.changes > 0) {
+      return record;
+    }
+    return null;
   }
 
-  delete(record: T) {
+  async delete(record: T) {
     if (this.shared.isWeb) {
-      return this.deleteRequest(record);
+      return await this.deleteRequest(record);
     }
     else if (this.shared.isOnline && record.id) {
-      return this.deleteRequest(record)
-        .pipe(switchMap(() => {
-          return this.deleteInLocal(record);
-        }));
+      await this.deleteRequest(record);
+      return await this.deleteInLocal(record);
     }
     else if (record.id) {
       record.local_updated_time = Utils.getTime();
       const query = `UPDATE ${this.tableName} SET isDeleted=?,localUpdatedTime=? WHERE localId=?`;
       const values = [true, record.local_updated_time, record.local_id];
-      return this.updateLocal(record, query, values);
+      return await this.updateLocal(record, query, values);
     }
     else {
-      return this.deleteInLocal(record);
+      return await this.deleteInLocal(record);
     }
   }
 
-  protected deleteRequest(record: T) {
+  protected async deleteRequest(record: T) {
     const value = record.id.toString();
-    return from(this.authService.supabase.from(this.endpoint).delete().match({ id: value }))
-      .pipe(map(() => null));
+    const { data, error } = await this.authService.supabase.from(this.endpoint).delete().match({ id: value });
+    if (error) {
+      throw error;
+    }
+    return null;
   }
 
-  protected deleteInLocal(record: T) {
+  protected async deleteInLocal(record: T) {
     const query = `DELETE FROM ${this.tableName} WHERE localId=?`;
     const values = [record.local_id];
-    return this.updateLocal(record, query, values);
+    return await this.updateLocal(record, query, values);
   }
 
   async getLocalId(remoteId: number): Promise<number> {

@@ -214,7 +214,7 @@ export class SaveComponent extends BaseForm implements OnInit {
         });
       }
     }
-    let obserable: Observable<Transaction>;
+    let obserable: Promise<Transaction>;
     if (!model.id && !model.local_id) {
       obserable = this.service.create(model);
     }
@@ -222,16 +222,13 @@ export class SaveComponent extends BaseForm implements OnInit {
       obserable = this.service.update(model);
     }
     obserable
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe({
-        error: (err) => {
-          this.handleErrors(err);
-        },
-        complete: () => {
-          this.storeService.getAccounts(true);
-          this.close();
-          this.router.navigateRoot(['transactions/account', model.account_id]);
-        }
+      .catch(err => {
+        this.handleErrors(err);
+      })
+      .then(() => {
+        this.storeService.getAccounts(true);
+        this.close();
+        this.router.navigateRoot(['transactions/account', model.account_id]);
       });
   }
 

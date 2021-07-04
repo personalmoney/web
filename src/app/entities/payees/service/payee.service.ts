@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Payee } from '../models/payee';
 import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from 'src/app/core/services/sq-lite.service';
-import { Observable } from 'rxjs';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -23,15 +22,15 @@ export class PayeeService extends SyncService<Payee> {
     super(http, shared, authService, sqlite);
   }
 
-  createLocalParms(record: Payee): Observable<Payee> {
+  async createLocalParms(record: Payee): Promise<Payee> {
     const query = `INSERT INTO ${this.tableName}(name,id,createdTime,updatedTime,isDeleted,localUpdatedTime) Values(?,?,?,?,?,?)`;
     const values = [record.name, record.id, new Date(), record.updated_time, false, record.local_updated_time];
-    return super.createLocal(record, query, values);
+    return await super.createLocal(record, query, values);
   }
 
-  updateLocalParms(record: Payee) {
+  async updateLocalParms(record: Payee) {
     const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
     const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
-    return super.updateLocal(record, query, values);
+    return await super.updateLocal(record, query, values);
   }
 }
