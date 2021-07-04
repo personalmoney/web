@@ -42,9 +42,9 @@ export abstract class CrudService<T extends TimeModel> {
     return result.values as T[];
   }
 
-  getModifiedData(syncTime: Date): Observable<T[]> {
-    return from(this.authService.supabase.from(this.endpoint).select('*').gte("updatedTime", syncTime.toISOString()))
-      .pipe(map(response => response.data));
+  async getModifiedData(syncTime: Date): Promise<T[]> {
+    const response = await this.authService.supabase.from(this.endpoint).select('*').gte("updatedTime", syncTime.toISOString());
+    return response.data;
   }
 
   async get(id: string): Promise<T> {

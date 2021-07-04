@@ -20,7 +20,7 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
         if (result.values.length > 0) {
             lastSyncDate = new Date(result.values[0].syncTime);
         }
-        const data = await this.getModifiedData(lastSyncDate).toPromise();
+        const data = await this.getModifiedData(lastSyncDate);
         if (data && data.length > 0) {
             console.log(`${this.tableName}: ${data.length} remote record(s) found`);
 
