@@ -23,7 +23,7 @@
     "@angular/router": "^11.2.13",
     "@capacitor-community/sqlite": "^3.0.0-beta.13",
     "@capacitor/android": "^3.0.1",
-    "@capacitor/app": "^1.0.0",
+    "@capacitor/app": "^1.0.2",
     "@capacitor/core": "^3.0.0",
     "@capacitor/device": "^0.6.0",
     "@capacitor/haptics": "^1.0.2",
