@@ -92,7 +92,11 @@ export class SaveComponent extends BaseForm implements OnInit {
         this.payees = data[0] as Payee[];
         this.tags = data[1] as Tag[];
         this.categories = data[2] as Category[];
-        this.accounts = data[3] as Account[];
+        if (this.transaction) {
+          this.accounts = data[3] as Account[];
+        } else {
+          this.accounts = (data[3] as Account[]).filter(c => c.is_active === true);
+        }
 
         this.searchCategories({});
 
