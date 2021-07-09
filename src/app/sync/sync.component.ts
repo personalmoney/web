@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { SharedService } from '../core/services/shared.service';
 import { AccountTypeService } from '../entities/account-type/service/account-type.service';
 import { BaseComponent } from '../core/helpers/base.component';
 import { TagService } from '../entities/tags/service/tag.service';

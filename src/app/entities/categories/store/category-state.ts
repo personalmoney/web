@@ -2,7 +2,6 @@ import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { Category } from '../models/category';
 import { CategoryService } from '../service/category.service';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
 import {
     AddCategory, GetCategories, UpdateCategory, DeleteCategory, DeleteSubCategory, UpdateSubCategory, AddSubCategory
 } from './actions';
@@ -39,28 +38,28 @@ export class CategoryState {
     @Action(GetCategories)
     get({ getState, setState }: StateContext<CategoryStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddCategory)
     add({ getState, patchState }: StateContext<CategoryStateModel>, { payload }: AddCategory) {
-        return this.service.create(payload).pipe(tap((result) => {
+        return this.service.create(payload).then((result) => {
             const state = getState();
             patchState({
                 data: [...state.data, result]
             });
-        }));
+        });
     }
 
     @Action(UpdateCategory)
     update({ getState, setState }: StateContext<CategoryStateModel>, { payload }: UpdateCategory) {
-        return this.service.update(payload).pipe(tap((result) => {
+        return this.service.update(payload).then((result) => {
             const state = getState();
             const dataList = [...state.data];
             const dataIndex = dataList.findIndex(item => payload.local_id ? (item.local_id === payload.local_id) : (item.id === payload.id));
@@ -69,13 +68,13 @@ export class CategoryState {
                 ...state,
                 data: dataList,
             });
-        }));
+        });
     }
 
 
     @Action(DeleteCategory)
     delete({ getState, setState }: StateContext<CategoryStateModel>, { payload }: DeleteCategory) {
-        return this.service.delete(payload).pipe(tap(() => {
+        return this.service.delete(payload).then(() => {
             const state = getState();
             let filteredArray;
             if (payload.id) {
@@ -88,13 +87,13 @@ export class CategoryState {
                 ...state,
                 data: filteredArray,
             });
-        }));
+        });
     }
 
     @Action(AddSubCategory)
     @ImmutableContext()
     addSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: AddSubCategory) {
-        return this.subCategoryService.create(payload).pipe(tap((result) => {
+        return this.subCategoryService.create(payload).then((result) => {
             const state = getState();
             const { index } = this.getCategory(state, payload);
             setState((state: CategoryStateModel) => {
@@ -104,13 +103,13 @@ export class CategoryState {
                 state.data[index].sub_categories.push(result);
                 return state;
             });
-        }));
+        });
     }
 
     @Action(UpdateSubCategory)
     @ImmutableContext()
     updateSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: UpdateSubCategory) {
-        return this.subCategoryService.update(payload).pipe(tap((result) => {
+        return this.subCategoryService.update(payload).then((result) => {
             const state = getState();
             const { category, index } = this.getCategory(state, payload);
             const dataIndex = category.sub_categories.findIndex(item => payload.local_id
@@ -119,13 +118,13 @@ export class CategoryState {
                 state.data[index].sub_categories[dataIndex] = result;
                 return state;
             });
-        }));
+        });
     }
 
     @Action(DeleteSubCategory)
     @ImmutableContext()
     deleteSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: DeleteSubCategory) {
-        return this.subCategoryService.delete(payload).pipe(tap(() => {
+        return this.subCategoryService.delete(payload).then(() => {
             const state = getState();
             const { category, index } = this.getCategory(state, payload);
             let filteredArray;
@@ -138,7 +137,7 @@ export class CategoryState {
             state.data[index].sub_categories = filteredArray;
 
             setState(s => state);
-        }));
+        });
     }
 
     private getCategory(state: CategoryStateModel, payload: SubCategory) {

@@ -25,36 +25,32 @@ export class CategoryService extends SyncService<Category> {
     super(http, shared, authService, sqlite);
   }
 
-  getAll() {
+  async getAll() {
     if (this.shared.isWeb) {
-      return super.getAll(false, `*,sub_categories(id,name,category_id)`);
+      return await super.getAll(false, `*,sub_categories(id,name,category_id)`);
     }
-    return super.getAll()
-      .pipe(
-        switchMap(data => {
-          const query = `SELECT S.localId,S.localUpdatedTime,S.id,S.name,S.localCategoryId,S.createdTime,S.updatedTime,C.id as categoryId
+    const data = await super.getAll();
+
+    const query = `SELECT S.localId,S.localUpdatedTime,S.id,S.name,S.localCategoryId,S.createdTime,S.updatedTime,C.id as categoryId
           FROM SubCategory S
           INNER JOIN Category C ON S.localCategoryId=C.localId WHERE S.isDeleted='${this.shared.falseValue}'`;
-          return from(this.sqlite.query(query))
-            .pipe(map(result => {
-              const values = result.values as SubCategory[];
-              data.forEach(d => {
-                d.sub_categories = values.filter(f => f.local_category_id === d.local_id);
-              });
-              return data;
-            }));
-        }));
+    const result = await this.sqlite.query(query);
+    const values = result.values as SubCategory[];
+    data.forEach(d => {
+      d.sub_categories = values.filter(f => f.local_category_id === d.local_id);
+    });
+    return data;
   }
 
-  createLocalParms(record: Category): Observable<Category> {
+  async createLocalParms(record: Category): Promise<Category> {
     const query = `INSERT INTO ${this.tableName}(name,id,createdTime,updatedTime,isDeleted,localUpdatedTime) Values(?,?,?,?,?,?)`;
     const values = [record.name, record.id, new Date(), record.updated_time, false, record.local_updated_time];
-    return super.createLocal(record, query, values);
+    return await super.createLocal(record, query, values);
   }
 
-  updateLocalParms(record: Category) {
+  async updateLocalParms(record: Category) {
     const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
     const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
-    return super.updateLocal(record, query, values);
+    return await super.updateLocal(record, query, values);
   }
 }
