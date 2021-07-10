@@ -20,7 +20,7 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
         if (result.values.length > 0) {
             lastSyncDate = new Date(result.values[0].syncTime);
         }
-        const data = await this.getModifiedData(lastSyncDate).toPromise();
+        const data = await this.getModifiedData(lastSyncDate);
         if (data && data.length > 0) {
             console.log(`${this.tableName}: ${data.length} remote record(s) found`);
 
@@ -41,7 +41,7 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
 
                 // #4 created the new records
                 record.local_updated_time = record.updated_time;
-                await this.createLocalParms(record).toPromise();
+                await this.createLocalParms(record);
             });
         }
 
@@ -100,11 +100,11 @@ export abstract class SyncService<T extends TimeModel> extends CrudService<T> {
         }
         else if (localRecord.local_updated_time < record.updated_time) {
             record.local_updated_time = record.updated_time;
-            await this.updateLocalParms(record).toPromise();
+            await this.updateLocalParms(record);
         }
         else {
             localRecord.id = record.id;
-            await this.update(localRecord).toPromise();
+            await this.update(localRecord);
         }
         return true;
     }

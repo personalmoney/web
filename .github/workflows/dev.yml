@@ -17,7 +17,7 @@ jobs:
         name: Checkout
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.2.0
         with:
           node-version: 16.x
 
@@ -26,9 +26,6 @@ jobs:
 
       - run: npm run lint
         name: Check Code
-
-      - run: npm run add-version
-        name: Update version
 
       - name: Build and Deploy
         uses: Azure/static-web-apps-deploy@v1

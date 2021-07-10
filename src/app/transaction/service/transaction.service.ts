@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { Transaction } from '../models/transaction';
-import { Observable, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from 'src/app/core/services/sq-lite.service';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { TransactionSearch } from '../models/transaction-Search';
 import { TransactionView } from '../models/transaction-view';
-import { map } from 'rxjs/operators';
 import { PageResponse } from 'src/app/models/page-response';
 import { AuthService } from 'src/app/services/auth.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
@@ -68,38 +66,44 @@ export class TransactionService extends SyncService<Transaction> {
     return data;
   }
 
-  create(record: Transaction): Observable<Transaction> {
+  async create(record: Transaction): Promise<Transaction> {
     if (this.sharedService.isWeb) {
-      return this.createOrUpdateRecord(record);
+      return await this.createOrUpdateRecord(record);
     }
     else {
-      return super.create(record);
+      return await super.create(record);
     }
   }
 
-  update(record: Transaction): Observable<Transaction> {
+  async update(record: Transaction): Promise<Transaction> {
     if (this.sharedService.isWeb) {
-      return this.createOrUpdateRecord(record);
+      return await this.createOrUpdateRecord(record);
     }
     else {
-      return super.update(record);
+      return await super.update(record);
     }
   }
 
-  createOrUpdateRecord(record: Transaction): Observable<Transaction> {
+  async createOrUpdateRecord(record: Transaction): Promise<Transaction> {
     record.created_time = record.updated_time = new Date();
     if (record.id) {
       delete record.created_time;
     }
     record.user_id = this.currentUserId;
-    return from(this.authService.supabase.rpc("save_transactions", { record: record }))
-      .pipe(map(response => response.data[0]));
+    const { data, error } = await this.authService.supabase.rpc("save_transactions", { record: record });
+    if (error) {
+      throw error;
+    }
+    if (data && data.length > 0) {
+      return data[0];
+    }
+    return null;
   }
 
-  createLocalParms(record: Transaction): Observable<Transaction> {
+  createLocalParms(record: Transaction): Promise<Transaction> {
     throw new Error('Method not implemented.');
   }
-  updateLocalParms(record: Transaction): Observable<Transaction> {
+  updateLocalParms(record: Transaction): Promise<Transaction> {
     throw new Error('Method not implemented.');
   }
 

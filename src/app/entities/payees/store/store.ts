@@ -2,7 +2,6 @@ import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { Payee } from '../models/payee';
 import { PayeeService } from '../service/payee.service';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
 import { AddPayee, GetPayees, UpdatePayee, DeletePayee } from './actions';
 
 export class PayeeStateModel {
@@ -34,28 +33,28 @@ export class PayeeState {
     @Action(GetPayees)
     get({ getState, setState }: StateContext<PayeeStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddPayee)
     add({ getState, patchState }: StateContext<PayeeStateModel>, { payload }: AddPayee) {
-        return this.service.create(payload).pipe(tap((result) => {
+        return this.service.create(payload).then((result) => {
             const state = getState();
             patchState({
                 data: [...state.data, result]
             });
-        }));
+        });
     }
 
     @Action(UpdatePayee)
     update({ getState, setState }: StateContext<PayeeStateModel>, { payload }: UpdatePayee) {
-        return this.service.update(payload).pipe(tap((result) => {
+        return this.service.update(payload).then((result) => {
             const state = getState();
             const dataList = [...state.data];
             const dataIndex = dataList.findIndex(item => payload.local_id ? (item.local_id === payload.local_id) : (item.id === payload.id));
@@ -64,13 +63,13 @@ export class PayeeState {
                 ...state,
                 data: dataList,
             });
-        }));
+        });
     }
 
 
     @Action(DeletePayee)
     delete({ getState, setState }: StateContext<PayeeStateModel>, { payload }: DeletePayee) {
-        return this.service.delete(payload).pipe(tap(() => {
+        return this.service.delete(payload).then(() => {
             const state = getState();
             let filteredArray;
             if (payload.id) {
@@ -83,6 +82,6 @@ export class PayeeState {
                 ...state,
                 data: filteredArray,
             });
-        }));
+        });
     }
 }

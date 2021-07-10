@@ -2,7 +2,6 @@ import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { Account } from '../models/account';
 import { AccountService } from '../service/account.service';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
 import { AddAccount, GetAccounts, UpdateAccount, DeleteAccount } from './actions';
 
 export class AccountStateModel {
@@ -34,28 +33,28 @@ export class AccountState {
     @Action(GetAccounts)
     get({ getState, setState }: StateContext<AccountStateModel>) {
 
-        return this.service.getAll().pipe(tap((result) => {
+        return this.service.getAll().then((result) => {
             const state = getState();
             setState({
                 ...state,
                 data: result,
             });
-        }));
+        });
     }
 
     @Action(AddAccount)
     add({ getState, patchState }: StateContext<AccountStateModel>, { payload }: AddAccount) {
-        return this.service.create(payload).pipe(tap((result) => {
+        return this.service.create(payload).then((result) => {
             const state = getState();
             patchState({
                 data: [...state.data, result]
             });
-        }));
+        });
     }
 
     @Action(UpdateAccount)
     update({ getState, setState }: StateContext<AccountStateModel>, { payload }: UpdateAccount) {
-        return this.service.update(payload).pipe(tap((result) => {
+        return this.service.update(payload).then((result) => {
             const state = getState();
             const dataList = [...state.data];
             const dataIndex = dataList.findIndex(item => payload.local_id ? (item.local_id === payload.local_id) : (item.id === payload.id));
@@ -64,13 +63,13 @@ export class AccountState {
                 ...state,
                 data: dataList,
             });
-        }));
+        });
     }
 
 
     @Action(DeleteAccount)
     delete({ getState, setState }: StateContext<AccountStateModel>, { payload }: DeleteAccount) {
-        return this.service.delete(payload).pipe(tap(() => {
+        return this.service.delete(payload).then(() => {
             const state = getState();
             let filteredArray;
             if (payload.id) {
@@ -83,6 +82,6 @@ export class AccountState {
                 ...state,
                 data: filteredArray,
             });
-        }));
+        });
     }
 }
