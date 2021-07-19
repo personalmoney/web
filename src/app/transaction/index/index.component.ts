@@ -54,7 +54,9 @@ export class IndexComponent extends BaseComponent implements OnInit {
             return;
           }
 
-          this.accounts = data;
+          if (data) {
+            this.accounts = data.filter(c => c.is_active === true);
+          }
 
           this.activeRoute.paramMap
             .pipe(takeUntil(this.ngUnsubscribe))
