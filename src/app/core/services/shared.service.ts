@@ -8,7 +8,6 @@ import { Network } from '@capacitor/network';
 })
 export class SharedService {
   public loadingMap: Map<string, boolean> = new Map<string, boolean>();
-  public showMenu$: Subject<boolean> = new Subject<boolean>();
   isOnline = false;
   isWeb = true;
   isElectron = new BehaviorSubject(false);

@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'info-circle'
     }
   ];
-  showMenu = true;
+  showMenu = false;
   userName = '';
   currentRoute: string = '';
 
@@ -79,6 +79,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.url.slice(1, event.url.length);
+        if (this.currentRoute === 'login') {
+          this.showMenu = false;
+        }
+
       });
   }
 
@@ -86,16 +90,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
     });
   }
 
   async ngOnInit() {
-    this.sharedService.showMenu$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        this.showMenu = result;
-      });
     this.getUserName();
 
     const info = await Device.getInfo();
@@ -108,6 +106,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(() => {
         this.getUserName();
       }, 2000);
+    } else {
+      this.showMenu = true;
     }
   }
 
