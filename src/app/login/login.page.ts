@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from '../core/helpers/base.component';
-import { SharedService } from '../core/services/shared.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -14,7 +13,6 @@ export class LoginPageComponent extends BaseComponent {
 
   constructor(
     private authService: AuthService,
-    private shared: SharedService,
     private router: Router
   ) {
     super()
@@ -22,11 +20,9 @@ export class LoginPageComponent extends BaseComponent {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(data => {
         if (data) {
-          this.shared.showMenu$.next(true);
-          this.router.navigate(['dashboard']);
-        }
-        else {
-          this.shared.showMenu$.next(false);
+          setTimeout(() => {
+            this.router.navigate(['dashboard']);
+          }, 500);
         }
       });
   }
