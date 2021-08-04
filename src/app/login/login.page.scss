@@ -3,14 +3,10 @@
     justify-content: center;
 
     .sign-up-box {
-        width: 60%;
+        width: 100%;
         height: 100vh;
         background-image: linear-gradient(to bottom, rgba(38, 153, 251, 1), rgb(94, 173, 233));
         border-radius: 10px;
-
-        @media screen and (max-width: 1024px) {
-            width: 100%;
-        }
 
         .content {
             display: flex;
