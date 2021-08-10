@@ -68,7 +68,7 @@ export class IndexComponent extends BaseComponent implements OnInit {
                 this.loadInitialData();
               }
               else if (data) {
-                this.selectedAccount = data[0];
+                this.selectedAccount = this.accounts[0];
                 this.loadInitialData();
               }
             });
