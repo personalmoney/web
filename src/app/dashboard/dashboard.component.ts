@@ -56,6 +56,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
   mapData() {
     this.dashboardData = [];
+    this.totalBalance = 0;
     this.accountTypes.map(c => {
       let currentAccounts;
       if (this.shared.isWeb) {
