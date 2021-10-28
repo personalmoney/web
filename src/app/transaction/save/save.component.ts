@@ -232,7 +232,7 @@ export class SaveComponent extends BaseForm implements OnInit {
       .then(() => {
         this.storeService.getAccounts(true);
         this.close();
-        this.router.navigateRoot(['transactions/account', model.account_id]);
+        this.router.navigateRoot(['transactions/account', model.trans_type === 'Transfer' ? model.to_account_id : model.account_id]);
       });
   }
 
