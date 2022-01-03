@@ -6,8 +6,8 @@ import { SharedService } from './shared.service';
 import { AuthService } from 'src/app/services/auth.service';
 
 export abstract class CrudService<T extends TimeModel> {
-  abstract endpoint = '';
-  abstract tableName = '';
+  abstract endpoint;
+  abstract tableName;
   currentUserId = '';
 
   constructor(
