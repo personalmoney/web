@@ -63,7 +63,12 @@ export class TransactionService extends SyncService<Transaction> {
   async getCategories(id: number) {
     const { data, error } = await this.authService.supabase.rpc('function_get_payee_categories',
       { source_payee_id: id });
-    return data;
+    if (data) {
+      return data.map(c => c.sub_category_id);
+    }
+    else {
+      return [];
+    }
   }
 
   async create(record: Transaction): Promise<Transaction> {
