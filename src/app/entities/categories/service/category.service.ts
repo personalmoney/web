@@ -3,10 +3,8 @@ import { SyncService } from 'src/app/core/services/sync.service';
 import { Category } from '../models/category';
 import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from 'src/app/core/services/sq-lite.service';
-import { Observable, from } from 'rxjs';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { SubCategory } from '../models/sub-category';
-import { map, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Injectable({
@@ -52,5 +50,13 @@ export class CategoryService extends SyncService<Category> {
     const query = `UPDATE ${this.tableName} SET name=?,updatedTime=?,localUpdatedTime=? WHERE localId=?`;
     const values = [record.name, record.updated_time, record.local_updated_time, record.local_id];
     return await super.updateLocal(record, query, values);
+  }
+
+  async update(record: Category): Promise<Category> {
+    const subCategories = record.sub_categories;
+    delete record.sub_categories;
+    const result = await super.update(record);
+    result.sub_categories = subCategories;
+    return result;
   }
 }
