@@ -9,6 +9,7 @@ import { TransactionView } from '../models/transaction-view';
 import { PageResponse } from 'src/app/models/page-response';
 import { AuthService } from 'src/app/services/auth.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,10 @@ export class TransactionService extends SyncService<Transaction> {
     private sharedService: SharedService,
     authService: AuthService,
     private spinner: SpinnerVisibilityService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, sharedService, authService, sqlite);
+    super(http, sharedService, authService, notification, sqlite);
   }
 
   async getTransactions(request: TransactionSearch): Promise<PageResponse<TransactionView>> {

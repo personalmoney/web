@@ -1,0 +1,78 @@
+[
+    {
+        "key": "duplicate key value violates unique constraint \"payees_unique_name\"",
+        "value": "Payee name already exists"
+    },
+    {
+        "key": "new row for relation \"payees\" violates check constraint \"payees_name_check\"",
+        "value": "Payee name length should be greater than 1 character"
+    },
+    {
+        "key": "new row for relation \"payees\" violates check constraint \"payees_name_check2\"",
+        "value": "Payee name length should be less then 100 characters"
+    },
+    {
+        "key": "update or delete on table \"payees\" violates foreign key constraint \"transactions_payee_id_fkey\" on table \"transactions\"",
+        "value": "Unable to delete the Payee as it is already used in transactions"
+    },
+    {
+        "key": "duplicate key value violates unique constraint \"account_types_unique_name\"",
+        "value": "Account type name already exists"
+    },
+    {
+        "key": "new row for relation \"account_types\" violates check constraint \"account_types_name_check\"",
+        "value": "Account type name length should be greater than 1 character"
+    },
+    {
+        "key": "new row for relation \"account_types\" violates check constraint \"account_types_name_check1\"",
+        "value": "Account type name length should be less than 100 characters"
+    },
+    {
+        "key": "update or delete on table \"account_types\" violates foreign key constraint \"accounts_account_type_id_fkey\" on table \"accounts\"",
+        "value": "Unable to delete the Account type because accounts present under this"
+    },
+    {
+        "key": "duplicate key value violates unique constraint \"categories_unique_name\"",
+        "value": "Category name already exists"
+    },
+    {
+        "key": "new row for relation \"categorie\" violates check constraint \"categories_name_check\"",
+        "value": "Category name length should be greater than 1 character"
+    },
+    {
+        "key": "new row for relation \"categories\" violates check constraint \"categories_name_check1\"",
+        "value": "Category name length should be less than 100 characters"
+    },
+    {
+        "key": "update or delete on table \"categories\" violates foreign key constraint \"sub_categories_category_id_fkey\" on table \"sub_categories\"",
+        "value": "Unable to delete the Category because Sub-categories present under this"
+    },
+    {
+        "key": "update or delete on table \"sub_categories\" violates foreign key constraint \"transactions_sub_category_id_fkey\" on table \"transactions\"",
+        "value": "Unable to delete the Sub-category as it is already used in transactions"
+    },
+    {
+        "key": "duplicate key value violates unique constraint \"sub_categories_unique_name\"",
+        "value": "SubCategory name already exists under this Category"
+    },
+    {
+        "key": "update or delete on table \"accounts\" violates foreign key constraint \"transactions_account_id_fkey\" on table \"transactions\"",
+        "value": "Unable to delete the Account as it is already used in transactions"
+    },
+    {
+        "key": "duplicate key value violates unique constraint \"accounts_unique_name\"",
+        "value": "Account name already exists"
+    },
+    {
+        "key": "new row for relation \"tags\" violates check constraint \"tags_name_check\"",
+        "value": "Tag name length should be greater than 1 character"
+    },
+    {
+        "key": "new row for relation \"tags\" violates check constraint \"tags_name_check1\"",
+        "value": "Tag name length should be less than 100 character"
+    },
+    {
+        "key": "duplicate key value violates unique constraint \"tags_unique_name\"",
+        "value": "Tag name already exists"
+    }
+]

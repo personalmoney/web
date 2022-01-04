@@ -41,13 +41,13 @@ export class SaveComponent extends BaseForm implements OnInit {
         prefix: iconString[0]
       };
       this.form = this.formBuilder.group({
-        name: [this.accountType.name, [Validators.required, Validators.minLength(2)]],
+        name: [this.accountType.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         icon: [icon, [Validators.required]]
       });
     }
     else {
       this.form = this.formBuilder.group({
-        name: ['', [Validators.required, Validators.minLength(2)]],
+        name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         icon: ['', [Validators.required]]
       });
     }

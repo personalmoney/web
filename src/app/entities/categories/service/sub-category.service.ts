@@ -8,6 +8,7 @@ import { SyncService } from 'src/app/core/services/sync.service';
 import { CategoryService } from './category.service';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,10 @@ export class SubCategoryService extends SyncService<SubCategory> {
     protected shared: SharedService,
     private categoryService: CategoryService,
     authService: AuthService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, shared, authService, sqlite);
+    super(http, shared, authService, notification, sqlite);
   }
 
   async getRecords(categoryId: number): Promise<SubCategory[]> {

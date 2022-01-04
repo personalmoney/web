@@ -6,6 +6,7 @@ import { SqLiteService } from 'src/app/core/services/sq-lite.service';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { SubCategory } from '../models/sub-category';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,10 @@ export class CategoryService extends SyncService<Category> {
     http: HttpClient,
     protected shared: SharedService,
     authService: AuthService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, shared, authService, sqlite);
+    super(http, shared, authService, notification, sqlite);
   }
 
   async getAll() {
