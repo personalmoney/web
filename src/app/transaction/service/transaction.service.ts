@@ -99,11 +99,19 @@ export class TransactionService extends SyncService<Transaction> {
     record.user_id = this.currentUserId;
     const { data, error } = await this.authService.supabase.rpc("save_transactions", { record: record });
     if (error) {
+      this.notification.showErrorMessage(error.message);
       throw error;
     }
     if (data && data.length > 0) {
+      if (record.id) {
+        this.notification.showInfoMessage('Record updated successfully');
+      }
+      else {
+        this.notification.showInfoMessage('Record created successfully');
+      }
       return data[0];
     }
+    this.notification.showErrorMessage('Unknown error occurred. Please try again.');
     return null;
   }
 
