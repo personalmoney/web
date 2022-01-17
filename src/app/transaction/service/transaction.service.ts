@@ -9,6 +9,7 @@ import { TransactionView } from '../models/transaction-view';
 import { PageResponse } from 'src/app/models/page-response';
 import { AuthService } from 'src/app/services/auth.service';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,10 @@ export class TransactionService extends SyncService<Transaction> {
     private sharedService: SharedService,
     authService: AuthService,
     private spinner: SpinnerVisibilityService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, sharedService, authService, sqlite);
+    super(http, sharedService, authService, notification, sqlite);
   }
 
   async getTransactions(request: TransactionSearch): Promise<PageResponse<TransactionView>> {
@@ -97,11 +99,19 @@ export class TransactionService extends SyncService<Transaction> {
     record.user_id = this.currentUserId;
     const { data, error } = await this.authService.supabase.rpc("save_transactions", { record: record });
     if (error) {
+      this.notification.showErrorMessage(error.message);
       throw error;
     }
     if (data && data.length > 0) {
+      if (record.id) {
+        this.notification.showInfoMessage('Record updated successfully');
+      }
+      else {
+        this.notification.showInfoMessage('Record created successfully');
+      }
       return data[0];
     }
+    this.notification.showErrorMessage('Unknown error occurred. Please try again.');
     return null;
   }
 
