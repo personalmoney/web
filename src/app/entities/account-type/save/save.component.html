@@ -30,6 +30,10 @@
             *ngIf="isSubmitted && controls.name.errors?.minlength">
         Name should be min 2 chars long.
       </span>
+      <span class="error ion-padding"
+            *ngIf="isSubmitted && controls.name.errors?.maxlength">
+        Name should be max 50 characters long.
+      </span>
 
       <ion-item lines="full">
         <ion-label position="floating">Icon</ion-label>

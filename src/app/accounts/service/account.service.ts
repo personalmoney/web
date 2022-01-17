@@ -6,6 +6,7 @@ import { SharedService } from 'src/app/core/services/shared.service';
 import { AccountTypeService } from 'src/app/entities/account-type/service/account-type.service';
 import { SyncService } from 'src/app/core/services/sync.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,10 @@ export class AccountService extends SyncService<Account> {
     protected shared: SharedService,
     private accountType: AccountTypeService,
     authService: AuthService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, shared, authService, sqlite);
+    super(http, shared, authService, notification, sqlite);
   }
 
   async getAll(): Promise<Account[]> {
