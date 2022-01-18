@@ -71,6 +71,9 @@ export class ReportService {
     if (request.toAmount) {
       query = query.lte('amount', request.toAmount);
     }
+    if (request.payeeIds && request.payeeIds.length > 0) {
+      query = query.in('payee_id', request.payeeIds);
+    }
     return query;
   }
 }

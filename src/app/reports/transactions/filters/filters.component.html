@@ -101,6 +101,37 @@
                            type="currency"></ion-input>
             </ion-item>
         </div>
+
+        <ion-item lines="full">
+            <ion-label position="floating">Payees</ion-label>
+            <ionic-selectable #payeeComponent
+                              [items]="payees"
+                              placeholder="Select payees"
+                              formControlName="payeeIds"
+                              itemValueField="id"
+                              itemTextField="name"
+                              [isMultiple]="true"
+                              [canClear]="true"
+                              [canSearch]="true">
+                <ng-template ionicSelectableHeaderTemplate>
+                    <ion-toolbar color="primary">
+                        <ion-icon name="close-circle"
+                                  class="close-button"
+                                  slot="end"
+                                  (click)="payeeComponent.close()"></ion-icon>
+                        <ion-title>
+                            Select Payees
+                        </ion-title>
+                    </ion-toolbar>
+                </ng-template>
+                <ng-template ionicSelectableValueTemplate
+                             let-records="value">
+                    <div class="ionic-selectable-value-item">
+                        {{formatData(records)}}
+                    </div>
+                </ng-template>
+            </ionic-selectable>
+        </ion-item>
     </form>
 </ion-content>
 <ion-footer>

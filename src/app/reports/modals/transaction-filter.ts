@@ -7,4 +7,5 @@ export class TransactionFilter extends PageRequest {
     toAmount?: number;
     fromDate?: Date;
     toDate?: Date;
+    payeeIds?: number[];
 }
