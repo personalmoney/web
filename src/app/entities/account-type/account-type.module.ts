@@ -7,7 +7,6 @@ import { IndexComponent } from './index/index.component';
 import { AccountTypeRoutingModule } from './account-type.routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicSelectableModule } from 'ionic-selectable';
-import { CoreModule } from 'src/app/core/core.module';
 
 @NgModule({
     declarations: [

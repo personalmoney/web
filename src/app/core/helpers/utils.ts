@@ -5,3 +5,9 @@ export class Utils {
         return new Date(new Date().toISOString());
     }
 }
+
+export enum TransactionType {
+    Withdraw = 'Withdraw',
+    Deposit = 'Deposit',
+    Transfer = 'Transfer'
+}
