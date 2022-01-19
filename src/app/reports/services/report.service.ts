@@ -76,6 +76,9 @@ export class ReportService {
     if (request.payeeIds && request.payeeIds.length > 0) {
       query = query.in('payee_id', request.payeeIds);
     }
+    if (request.subCategoryIds && request.subCategoryIds.length > 0) {
+      query = query.in('sub_category_id', request.subCategoryIds);
+    }
     if (request.notes) {
       query = query.like('notes', request.notes + '%');
     }

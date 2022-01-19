@@ -8,5 +8,6 @@ export class TransactionFilter extends PageRequest {
     fromDate?: Date;
     toDate?: Date;
     payeeIds?: number[];
+    subCategoryIds?: number[];
     notes?: string;
 }
