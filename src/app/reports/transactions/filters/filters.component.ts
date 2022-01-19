@@ -7,6 +7,9 @@ import { Account } from 'src/app/accounts/models/account';
 import { AccountState } from 'src/app/accounts/store/store';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { TransactionType } from 'src/app/core/helpers/utils';
+import { Category } from 'src/app/entities/categories/models/category';
+import { SubCategory } from 'src/app/entities/categories/models/sub-category';
+import { CategoryState } from 'src/app/entities/categories/store/category-state';
 import { Payee } from 'src/app/entities/payees/models/payee';
 import { PayeeState } from 'src/app/entities/payees/store/store';
 import { StoreService } from 'src/app/store/store.service';
@@ -24,6 +27,7 @@ export class FiltersComponent extends BaseForm implements OnInit {
   types: any[] = [];
   @Input()
   filters: TransactionFilter;
+  subCategories: SubCategory[] = [];
 
   constructor(
     private store: Store,
@@ -57,6 +61,20 @@ export class FiltersComponent extends BaseForm implements OnInit {
         }
         this.patchPayees();
       });
+
+    this.storeService.getCategories();
+    this.store.select(CategoryState.getSortedData)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(data => {
+        if (data) {
+          this.subCategories = [];
+          data.forEach(c => {
+            const result = c.sub_categories.map(d => Object.assign({}, d, { category_name: c.name }));
+            this.subCategories.push(...result);
+          });
+        }
+        this.patchCategories();
+      });;
   }
 
 
@@ -69,6 +87,8 @@ export class FiltersComponent extends BaseForm implements OnInit {
       toDate: [''],
       fromAmount: [''],
       toAmount: [''],
+      notes: [''],
+      subCategoryIds: [],
       payeeIds: []
     });
   }
@@ -82,11 +102,18 @@ export class FiltersComponent extends BaseForm implements OnInit {
     this.form.patchValue({ toDate: this.filters.toDate });
     this.form.patchValue({ fromAmount: this.filters.fromAmount });
     this.form.patchValue({ toAmount: this.filters.toAmount });
+    this.form.patchValue({ notes: this.filters.notes });
   }
 
   patchAccounts() {
     if (this.filters.accountIds) {
       this.form.patchValue({ accountIds: this.accounts.filter(c => this.filters.accountIds.includes(c.id)) });
+    }
+  }
+
+  patchCategories() {
+    if (this.filters.subCategoryIds) {
+      this.form.patchValue({ subCategoryIds: this.subCategories.filter(c => this.filters.subCategoryIds.includes(c.id)) });
     }
   }
 
@@ -113,12 +140,22 @@ export class FiltersComponent extends BaseForm implements OnInit {
     this.filters.toDate = this.form.controls.toDate.value;
     this.filters.fromAmount = this.form.controls.fromAmount.value;
     this.filters.toAmount = this.form.controls.toAmount.value;
+    this.filters.notes = this.form.controls.notes.value;
+
+    this.filters.subCategoryIds = [];
+    if (this.form.controls.subCategoryIds.value) {
+      this.filters.subCategoryIds = this.form.controls.subCategoryIds.value.map(c => c.id);
+    }
 
     this.filters.payeeIds = [];
     if (this.form.controls.payeeIds.value) {
       this.filters.payeeIds = this.form.controls.payeeIds.value.map(c => c.id);
     }
     this.close(true);
+  }
+
+  clear() {
+    this.form.reset();
   }
 
   close(isSuccess: boolean = false) {

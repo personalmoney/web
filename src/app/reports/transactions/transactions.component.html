@@ -3,12 +3,17 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/reports"></ion-back-button>
     </ion-buttons>
-    <ion-title>Transaction history</ion-title>
+    <ion-title>
+      <span>Transaction history</span> <br>
+      <small class="mobile">Showing {{currentRecords}} of {{totalRecords}}</small>
+    </ion-title>
+
     <ion-buttons slot="end">
-      <ion-label>Showing {{currentRecords}} of {{totalRecords}}</ion-label>
+      <small class="desktop">Showing {{currentRecords}} of {{totalRecords}}</small>
       <ion-button slot="icon-only"
                   (click)="showFilters()">
-        <ion-icon name="filter-outline"></ion-icon>
+        <fa-icon icon="filter">
+        </fa-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
