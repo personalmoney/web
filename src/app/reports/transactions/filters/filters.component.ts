@@ -124,6 +124,10 @@ export class FiltersComponent extends BaseForm implements OnInit {
     this.close(true);
   }
 
+  clear() {
+    this.form.reset();
+  }
+
   close(isSuccess: boolean = false) {
     this.modal.dismiss(isSuccess, 'click');
   }
