@@ -69,6 +69,7 @@ export class FiltersComponent extends BaseForm implements OnInit {
       toDate: [''],
       fromAmount: [''],
       toAmount: [''],
+      notes: [''],
       payeeIds: []
     });
   }
@@ -82,6 +83,7 @@ export class FiltersComponent extends BaseForm implements OnInit {
     this.form.patchValue({ toDate: this.filters.toDate });
     this.form.patchValue({ fromAmount: this.filters.fromAmount });
     this.form.patchValue({ toAmount: this.filters.toAmount });
+    this.form.patchValue({ notes: this.filters.notes });
   }
 
   patchAccounts() {
@@ -113,6 +115,7 @@ export class FiltersComponent extends BaseForm implements OnInit {
     this.filters.toDate = this.form.controls.toDate.value;
     this.filters.fromAmount = this.form.controls.fromAmount.value;
     this.filters.toAmount = this.form.controls.toAmount.value;
+    this.filters.notes = this.form.controls.notes.value;
 
     this.filters.payeeIds = [];
     if (this.form.controls.payeeIds.value) {
