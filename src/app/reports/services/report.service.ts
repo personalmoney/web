@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { NotificationService } from 'src/app/core/services/notification.service';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { PageResponse } from 'src/app/models/page-response';
 import { AuthService } from 'src/app/services/auth.service';
@@ -15,6 +16,7 @@ export class ReportService {
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
+    private notification: NotificationService,
     private spinner: SpinnerVisibilityService) { }
 
   async getTransactions(request: TransactionFilter): Promise<PageResponse<TransactionView>> {
@@ -31,8 +33,8 @@ export class ReportService {
       const { data, count, error } = await query;
 
       if (error) {
-        //TODO show error message
         this.spinner.hide();
+        this.notification.showErrorMessage(error.message);
         throw error;
       }
       pageResponse.records = data;
