@@ -5,9 +5,13 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "packages"
+    assignees:
+      - "bhagavan44"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "packages"
+    assignees:
+      - "bhagavan44"
