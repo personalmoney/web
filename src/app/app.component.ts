@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: 'Reports',
-      url: 'folder/Reports',
+      url: 'reports',
       icon: 'chart-pie'
     },
 

@@ -1,0 +1,12 @@
+ion-content {
+    ion-label.sc-ion-label-md-h.sc-ion-label-md-s.md.label-floating.hydrated {
+        transform: translateY(50%) scale(0.75);
+    }
+
+    ion-label.sc-ion-label-ios-h.sc-ion-label-ios-s.ios.label-floating.hydrated {
+        transform: translateY(50%) scale(0.75);
+    }
+    ion-item {
+        padding: 0px 10px;
+    }
+}

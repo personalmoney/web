@@ -1,0 +1,118 @@
+.content {
+    margin-bottom: 60px;
+}
+.item {
+    font-size: 0.9rem;
+
+    .date {
+        width: 18%;
+        background-color: var(--ion-color-success);
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .category-data {
+        width: 47%;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+
+        .notes {
+            font-size: 0.7rem;
+            font-style: italic;
+
+            .note {
+                font-size: 0.7rem;
+                font-style: normal;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+
+        .tags {
+            font-size: 0.8rem;
+            padding-top: 2px;
+
+            .tag {
+                margin-right: 2px;
+                padding: 3px 6px;
+                background: orange;
+                border-radius: 20px;
+            }
+        }
+    }
+
+    .amount-data {
+        width: 35%;
+        padding: 5px;
+        display: flex;
+        align-items: flex-end;
+        justify-items: flex-end;
+        flex-direction: column;
+        font-size: 1rem;
+
+        .balance {
+            font-size: 0.8rem;
+        }
+
+        .account {
+            .label {
+                font-size: 0.7rem;
+            }
+
+            .value {
+                font-size: 0.9rem;
+            }
+        }
+
+        .Deposit {
+            color: green;
+        }
+
+        .Withdraw {
+            color: red;
+        }
+
+        .Transfer {
+            color: var(--ion-color-medium);
+        }
+    }
+}
+
+.label {
+    font-size: 1.05rem;
+}
+
+.total-balance {
+    text-align: right;
+    font-size: 1.15rem;
+
+    &.negative {
+        color: red;
+        text-align: right;
+    }
+
+    &.positive {
+        color: green;
+    }
+}
+
+fa-icon {
+    font-size: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+    .desktop {
+        display: none;
+    }
+}
+@media only screen and (min-width: 601px) {
+    .mobile {
+        display: none;
+    }
+}

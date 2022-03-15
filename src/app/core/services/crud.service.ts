@@ -4,16 +4,18 @@ import { Utils } from '../helpers/utils';
 import { TimeModel } from 'src/app/models/time-model';
 import { SharedService } from './shared.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from './notification.service';
 
 export abstract class CrudService<T extends TimeModel> {
-  abstract endpoint = '';
-  abstract tableName = '';
+  abstract endpoint;
+  abstract tableName;
   currentUserId = '';
 
   constructor(
     protected http: HttpClient,
     protected shared: SharedService,
     protected authService: AuthService,
+    protected notification: NotificationService,
     protected sqlite: SqLiteService
   ) {
     authService.currentUser.subscribe(d => {
@@ -74,7 +76,11 @@ export abstract class CrudService<T extends TimeModel> {
     record.user_id = this.currentUserId;
     const { data, error } = await this.authService.supabase.from(this.endpoint).insert(record);
     if (data && data.length > 0) {
+      this.notification.showInfoMessage('Record created successfully');
       return data[0];
+    }
+    if (error) {
+      this.notification.showErrorMessage(error.message);
     }
     throw error;
   }
@@ -107,7 +113,11 @@ export abstract class CrudService<T extends TimeModel> {
 
     const { data, error } = await this.authService.supabase.from(this.endpoint).update(record).match({ id });
     if (data && data.length > 0) {
+      this.notification.showInfoMessage('Record updated successfully');
       return data[0];
+    }
+    if (error) {
+      this.notification.showErrorMessage(error.message);
     }
     throw error;
   }
@@ -143,8 +153,10 @@ export abstract class CrudService<T extends TimeModel> {
     const value = record.id.toString();
     const { data, error } = await this.authService.supabase.from(this.endpoint).delete().match({ id: value });
     if (error) {
+      this.notification.showErrorMessage(error.message);
       throw error;
     }
+    this.notification.showInfoMessage('Record deleted successfully');
     return null;
   }
 

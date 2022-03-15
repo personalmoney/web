@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { SqLiteService } from 'src/app/core/services/sq-lite.service';
 import { SharedService } from 'src/app/core/services/shared.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,10 @@ export class TagService extends SyncService<Tag> {
     http: HttpClient,
     protected shared: SharedService,
     authService: AuthService,
+    notification: NotificationService,
     sqlite: SqLiteService
   ) {
-    super(http, shared, authService, sqlite);
+    super(http, shared, authService, notification, sqlite);
   }
 
   async createLocalParms(record: Tag): Promise<Tag> {

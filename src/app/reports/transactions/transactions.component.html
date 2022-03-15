@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/reports"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span>Transaction history</span> <br>
+      <small class="mobile">Showing {{currentRecords}} of {{totalRecords}}</small>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <small class="desktop">Showing {{currentRecords}} of {{totalRecords}}</small>
+      <ion-button slot="icon-only"
+                  (click)="showFilters()">
+        <fa-icon icon="filter">
+        </fa-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="content">
+    <ion-row>
+      <ion-col size="12"
+               size-md="6"
+               size-lg="6"
+               *ngFor="let record of transactions">
+        <ion-item class="item"
+                  (click)="showOptions($event, record)">
+
+          <div class="date">
+            <span class="month">{{record.trans_date | date:'MMM' }} </span>
+            <span class="day">{{record.trans_date | date:'dd' }} </span>
+            <span class="year">{{record.trans_date | date:'yyyy' }} </span>
+          </div>
+
+          <div class="category-data"
+               *ngIf="record.trans_type!=='Transfer'">
+            <span class="payee">{{record.payee_name }} </span>
+            <span class="category">{{record.category_name }} : {{record.sub_category_name}} </span>
+            <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
+            <div class="tags"> <span class="tag"
+                    *ngFor="let tag of record.tags">{{tag.name}}</span></div>
+          </div>
+
+          <div class="category-data"
+               *ngIf="record.trans_type==='Transfer'">
+            <span> To: {{record.to_account_name}}</span>
+            <div class="notes">Notes: <span class="note">{{record.notes }}</span> </div>
+            <div class="tags"> <span class="tag"
+                    *ngFor="let tag of record.tags">{{tag.name}}</span></div>
+          </div>
+
+          <div class="amount-data">
+            <span class="amount"
+                  [ngClass]="record.trans_type">{{record.amount |
+              currency}}</span>
+            <span class="balance">{{record.balance | currency}}</span>
+            <span class="account">
+              <span class="label">Account: </span>
+              <span class="value">{{record.account_name}}</span>
+            </span>
+          </div>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="transactions.length <= 0">
+      <ion-col>
+        <p>No records found</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll threshold="100px"
+                       (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles"
+                                 loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
