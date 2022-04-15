@@ -1,7 +1,7 @@
 {
   "projects": {},
   "targets": {
-    "investment-tracker-85e6e": {
+    "personal-money-app": {
       "hosting": {
         "dev": [
           "dev-expense-tracker"
