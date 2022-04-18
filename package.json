@@ -41,7 +41,7 @@
     "@ionic/angular": "^6.0.13",
     "@ngxs-labs/immer-adapter": "^3.0.5",
     "@ngxs/store": "^3.7.3",
-    "@supabase/supabase-js": "^1.33.3",
+    "@supabase/supabase-js": "^1.34.1",
     "immer": "^9.0.7",
     "ionic-selectable": "^4.9.0",
     "ng-http-loader": "11.0",
