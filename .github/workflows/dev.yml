@@ -27,14 +27,16 @@ jobs:
       - run: npm run lint
         name: Check Code
 
-      - name: Build and Deploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          action: upload
-          app_location: /
-          output_location: www
-          app_build_command: npm run build-prod
-          azure_static_web_apps_api_token: ${{ secrets.SITE_TOKEN }}
+      - run: npm run build-prod
+        name: Build code
         env:
           APP_URL: ${{ secrets.APP_URL }}
           APP_KEY: ${{ secrets.APP_KEY }}
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        name: Deploy to firebase
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_DEPLOY }}"
+          projectId: personal-money-app
+          channelId: live
+          target: dev
