@@ -1,0 +1,15 @@
+{
+  "projects": {},
+  "targets": {
+    "personal-money-app": {
+      "hosting": {
+        "dev": [
+          "dev-expense-tracker"
+        ],
+        "stage": [
+          "personal-money-app"
+        ]
+      }
+    }
+  }
+}
