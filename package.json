@@ -62,7 +62,7 @@
     "@angular/language-service": "~13.3.10",
     "@capacitor/cli": "^3.5.1",
     "@ionic/angular-toolkit": "^6.1.0",
-    "@ionic/lab": "3.2.11",
+    "@ionic/lab": "3.2.12",
     "@types/jasmine": "^4.0.3",
     "@types/jasminewd2": "~2.0.9",
     "@types/node": "^17.0.23",
