@@ -40,7 +40,7 @@
     "@ionic-native/status-bar": "^5.36.0",
     "@ionic/angular": "^6.1.6",
     "@ngxs-labs/immer-adapter": "^3.0.5",
-    "@ngxs/store": "^3.7.3",
+    "@ngxs/store": "^3.7.4",
     "@supabase/supabase-js": "^1.35.2",
     "immer": "^9.0.14",
     "ionic-selectable": "^4.9.0",
