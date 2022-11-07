@@ -30,7 +30,7 @@
     "@capacitor/haptics": "^1.1.4",
     "@capacitor/keyboard": "^1.2.2",
     "@capacitor/network": "^1.0.7",
-    "@fortawesome/angular-fontawesome": "^0.10.2",
+    "@fortawesome/angular-fontawesome": "^0.11.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
