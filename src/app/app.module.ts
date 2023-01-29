@@ -22,9 +22,10 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { TransactionModule } from './transaction/transaction.module';
 import { AboutComponent } from './about/about.component';
 import { WINDOW_PROVIDERS } from './services/window.providers';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, AboutComponent],
+  declarations: [AppComponent, DashboardComponent, AboutComponent, LogoutComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),

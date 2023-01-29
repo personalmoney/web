@@ -54,6 +54,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'cog'
     },
     {
+      title: 'Logout',
+      icon: 'sign-out-alt',
+      url: 'logout'
+    },
+    {
       title: 'About',
       url: 'about',
       icon: 'info-circle'
