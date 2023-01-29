@@ -41,7 +41,7 @@ export class AuthService {
     const user = await this.supabase.auth.getUser();
 
     if (user.data.user) {
-      this._currentUser.next(user);
+      this._currentUser.next(user.data.user);
     } else {
       this._currentUser.next(false);
     }
