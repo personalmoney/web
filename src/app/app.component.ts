@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar } from '@capacitor/status-bar';
+import { Style } from '@capacitor/status-bar/dist/esm/definitions';
 import { MenuItem } from './models/menu-item';
 import { SharedService } from './core/services/shared.service';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { SqLiteService } from './core/services/sq-lite.service';
 import { SchemaService } from './core/services/schema.service';
@@ -54,6 +55,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'cog'
     },
     {
+      title: 'Logout',
+      icon: 'sign-out-alt',
+      url: 'logout'
+    },
+    {
       title: 'About',
       url: 'about',
       icon: 'info-circle'
@@ -65,13 +71,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
     private sharedService: SharedService,
     private sqLiteService: SqLiteService,
     private authService: AuthService,
     private schemaService: SchemaService,
     router: Router,
-    private statusBar: StatusBar
   ) {
     this.initializeApp();
 
@@ -88,8 +92,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      StatusBar.setStyle({ style: Style.Default });
+      SplashScreen.hide();
     });
   }
 

@@ -10,7 +10,7 @@ describe('FolderPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FolderPageComponent],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([], { relativeLinkResolution: 'legacy' })]
+      imports: [IonicModule.forRoot(), RouterModule.forRoot([], {})]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FolderPageComponent);

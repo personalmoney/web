@@ -35,7 +35,7 @@ export abstract class CrudService<T extends TimeModel> {
   async getAll(forceRefresh = false, queryString: string = '*'): Promise<T[]> {
     if (this.shared.isWeb || forceRefresh) {
       const response = await this.authService.supabase.from(this.endpoint).select(queryString);
-      return response.data;
+      return response.data as unknown as T[];
     }
     const query = this.getLocalParams();
     const result = await this.sqlite.query(query);
@@ -74,7 +74,7 @@ export abstract class CrudService<T extends TimeModel> {
   private async createRequest(record: T): Promise<T> {
     record.created_time = record.updated_time = new Date();
     record.user_id = this.currentUserId;
-    const { data, error } = await this.authService.supabase.from(this.endpoint).insert(record);
+    const { data, error } = await this.authService.supabase.from(this.endpoint).insert(record).select();
     if (data && data.length > 0) {
       this.notification.showInfoMessage('Record created successfully');
       return data[0];
@@ -111,7 +111,7 @@ export abstract class CrudService<T extends TimeModel> {
     record.updated_time = new Date();
     const id = record.id.toString();
 
-    const { data, error } = await this.authService.supabase.from(this.endpoint).update(record).match({ id });
+    const { data, error } = await this.authService.supabase.from(this.endpoint).update(record).match({ id }).select();
     if (data && data.length > 0) {
       this.notification.showInfoMessage('Record updated successfully');
       return data[0];
@@ -151,7 +151,7 @@ export abstract class CrudService<T extends TimeModel> {
 
   protected async deleteRequest(record: T) {
     const value = record.id.toString();
-    const { data, error } = await this.authService.supabase.from(this.endpoint).delete().match({ id: value });
+    const { error } = await this.authService.supabase.from(this.endpoint).delete().match({ id: value });
     if (error) {
       this.notification.showErrorMessage(error.message);
       throw error;
