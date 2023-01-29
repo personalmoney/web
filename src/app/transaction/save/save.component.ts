@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { combineLatest, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -46,7 +46,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   @Input() oldTransaction: TransactionView
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private service: TransactionService,
     private router: NavController,
