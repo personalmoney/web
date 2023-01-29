@@ -39,12 +39,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     this.storeService.getAccounts();
     this.storeService.getAccountTypes();
 
-    const loader = [];
-    loader.push(this.store.select(AccountState.getSortedData));
-    loader.push(this.store.select(AccountTypeState.getSortedData));
+    const accounts = this.store.select(AccountState.getSortedData);
+    const accountTypes = this.store.select(AccountTypeState.getSortedData);
 
-    combineLatest(loader)
-      .subscribe(([data1, data2]) => {
+    combineLatest([accounts, accountTypes])
+      .subscribe((data) => {
+        const data1 = data[0];
+        const data2 = data[1];
         if (data1 && data2) {
           this.accountTypes = data2 as AccountType[];
           this.accounts = data1 as Account[];
