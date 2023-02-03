@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   @Select(AccountTypeState.getSortedData) accountTypes$: Observable<AccountType[]>;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private storeService: StoreService,
     public shared: SharedService,

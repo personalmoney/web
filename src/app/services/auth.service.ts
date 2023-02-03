@@ -18,8 +18,10 @@ export class AuthService {
     private spinner: SpinnerVisibilityService
   ) {
     this.supabase = createClient(environment.supabase.url, environment.supabase.key, {
-      autoRefreshToken: true,
-      persistSession: true
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true
+      }
     });
 
     // Try to recover our user session
@@ -36,10 +38,10 @@ export class AuthService {
   }
 
   async loadUser() {
-    const user = await this.supabase.auth.user();
+    const user = await this.supabase.auth.getUser();
 
-    if (user) {
-      this._currentUser.next(user);
+    if (user.data.user) {
+      this._currentUser.next(user.data.user);
     } else {
       this._currentUser.next(false);
     }
@@ -56,21 +58,21 @@ export class AuthService {
       return true;
     }
     this.spinner.show();
-    await this.supabase.auth.signIn({ provider: 'google' }, { redirectTo: this.redirectUrl });
+    await this.supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: this.redirectUrl } });
     this.spinner.hide();
   }
 
   async isLoggedIn(): Promise<boolean> {
-    const currentUser = await this.supabase.auth.user();
-    return currentUser != null;
+    const currentUser = await this.supabase.auth.getUser();
+    return currentUser.data.user != null;
   }
 
   async getUserName(): Promise<string> {
-    const currentUser = await this.supabase.auth.user();
-    if (currentUser == null) {
+    const currentUser = await this.supabase.auth.getUser();
+    if (currentUser == null || currentUser.data == null|| currentUser.data.user == null) {
       return '';
     }
-    return currentUser.email;
+    return currentUser.data.user?.email;
   }
 
   async signOut() {

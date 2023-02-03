@@ -7,7 +7,6 @@ import {
 } from './actions';
 import { SubCategory } from '../models/sub-category';
 import { SubCategoryService } from '../service/sub-category.service';
-import { ImmutableContext } from '@ngxs-labs/immer-adapter';
 
 export class CategoryStateModel {
     data: Category[];
@@ -91,7 +90,6 @@ export class CategoryState {
     }
 
     @Action(AddSubCategory)
-    @ImmutableContext()
     addSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: AddSubCategory) {
         return this.subCategoryService.create(payload).then((result) => {
             const state = getState();
@@ -107,7 +105,6 @@ export class CategoryState {
     }
 
     @Action(UpdateSubCategory)
-    @ImmutableContext()
     updateSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: UpdateSubCategory) {
         return this.subCategoryService.update(payload).then((result) => {
             const state = getState();
@@ -122,7 +119,6 @@ export class CategoryState {
     }
 
     @Action(DeleteSubCategory)
-    @ImmutableContext()
     deleteSubCategory({ getState, setState }: StateContext<CategoryStateModel>, { payload }: DeleteSubCategory) {
         return this.subCategoryService.delete(payload).then(() => {
             const state = getState();
