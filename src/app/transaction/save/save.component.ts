@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { combineLatest, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,8 +30,8 @@ export class SaveComponent extends BaseForm implements OnInit {
   payees: Payee[] = [];
   filteredPayees: Payee[] = [];
 
-  tags: Tag[] = [];
-  filteredTags: Tag[] = [];
+  //tags: Tag[] = [];
+  //filteredTags: Tag[] = [];
 
   categories: Category[] = [];
   subCategories: SubCategory[] = [];
@@ -46,7 +46,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   @Input() oldTransaction: TransactionView
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private service: TransactionService,
     private router: NavController,
@@ -58,7 +58,7 @@ export class SaveComponent extends BaseForm implements OnInit {
     this.storeService.getAccounts();
     this.storeService.getCategories();
     this.storeService.getPayees();
-    this.storeService.getTags();
+    //this.storeService.getTags();
   }
 
   ngOnInit() {
@@ -76,26 +76,25 @@ export class SaveComponent extends BaseForm implements OnInit {
     });
 
     this.subCategories = [];
-    const obserable = [];
 
-    obserable.push(this.store.select(PayeeState.getSortedData));
-    obserable.push(this.store.select(TagState.getSortedData));
-    obserable.push(this.store.select(CategoryState.getSortedData));
-    obserable.push(this.store.select(AccountState.getSortedData));
+    const payeeData = this.store.select(PayeeState.getSortedData);
+    //obserable.push(this.store.select(TagState.getSortedData));
+    const categoryData = this.store.select(CategoryState.getSortedData);
+    const accountData = this.store.select(AccountState.getSortedData);
 
-    combineLatest(obserable)
+    combineLatest([payeeData, categoryData, accountData])
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(data => {
-        if (!data[0] || !data[1] || !data[2] || !data[3]) {
+      .subscribe((data: any[]) => {
+        if (!data[0] || !data[1] || !data[2]) {
           return;
         }
         this.payees = data[0] as Payee[];
-        this.tags = data[1] as Tag[];
-        this.categories = data[2] as Category[];
+        //this.tags = data[1] as Tag[];
+        this.categories = data[1] as Category[];
         if (this.transaction) {
-          this.accounts = data[3] as Account[];
+          this.accounts = data[2] as Account[];
         } else {
-          this.accounts = (data[3] as Account[]).filter(c => c.is_active === true);
+          this.accounts = (data[2] as Account[]).filter(c => c.is_active === true);
         }
 
         this.searchCategories({});
@@ -144,9 +143,9 @@ export class SaveComponent extends BaseForm implements OnInit {
     this.filteredPayees = this.search($event, this.payees);
   }
 
-  searchTags($event) {
-    this.filteredTags = this.search($event, this.tags);
-  }
+  // searchTags($event) {
+  //   this.filteredTags = this.search($event, this.tags);
+  // }
 
   search($event, records) {
     const filteredRecords = [];

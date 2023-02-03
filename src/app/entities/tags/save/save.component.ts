@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { Tag } from '../models/tag';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   tag: Tag;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private modal: ModalController,
   ) {

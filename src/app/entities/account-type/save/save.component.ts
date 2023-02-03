@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { BaseForm } from 'src/app/core/helpers/base-form';
 import { AccountType } from '../models/account-type';
 import { ModalController } from '@ionic/angular';
@@ -25,7 +25,7 @@ export class SaveComponent extends BaseForm implements OnInit {
   accountType: AccountType;
 
   constructor(
-    public formBuilder: FormBuilder,
+    public formBuilder: UntypedFormBuilder,
     private modal: ModalController,
     private assets: AssetsService,
     private store: Store

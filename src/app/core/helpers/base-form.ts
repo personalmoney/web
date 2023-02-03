@@ -1,10 +1,10 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { BaseComponent } from './base.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export class BaseForm extends BaseComponent {
     isSubmitted = false;
-    form: FormGroup;
+    form: UntypedFormGroup;
     errors = [];
 
     get controls() {

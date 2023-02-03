@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SubCategory } from '../models/sub-category';
 import { BaseForm } from 'src/app/core/helpers/base-form';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,7 +25,7 @@ export class SubCategoryComponent extends BaseForm implements OnInit {
   subCategory: SubCategory;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private store: Store,
     private modal: ModalController,
   ) {

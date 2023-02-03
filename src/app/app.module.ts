@@ -4,8 +4,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,9 +20,10 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { TransactionModule } from './transaction/transaction.module';
 import { AboutComponent } from './about/about.component';
 import { WINDOW_PROVIDERS } from './services/window.providers';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, AboutComponent],
+  declarations: [AppComponent, DashboardComponent, AboutComponent, LogoutComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -40,8 +39,6 @@ import { WINDOW_PROVIDERS } from './services/window.providers';
     FontAwesomeModule
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
     WINDOW_PROVIDERS,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'INR' }
