@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { takeUntil } from 'rxjs/operators';
@@ -32,7 +32,7 @@ export class FiltersComponent extends BaseForm implements OnInit {
   constructor(
     private store: Store,
     private modal: ModalController,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private storeService: StoreService,
   ) {
     super();
