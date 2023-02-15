@@ -8,7 +8,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build-prod": "npm run config && ng build --configuration production && npm run post-build",
-    "config": "npm install -g ts-node@10.1.0 && ts-node ./resources/config.mjs",
+    "config": "npm install ts-node@10.1.0 && ts-node ./resources/config.mjs",
     "post-build": "ts-node ./resources/post-build.mjs",
     "test": "ng test",
     "lint": "ng lint",
