@@ -9,7 +9,7 @@ jobs:
   build_and_deploy:
     environment:
       name: STAGE
-      url: https://stage.money.bhagavan.tech
+      url: https://stage.money.mvtech.dev
     runs-on: ubuntu-latest
 
     steps:
