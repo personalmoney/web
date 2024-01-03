@@ -5,9 +5,9 @@ import { ReportsRoutingModule } from './reports-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { FiltersComponent } from './transactions/filters/filters.component';
-import { IonicSelectableModule } from 'ionic-selectable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { IonicModule } from '@ionic/angular';
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicSelectableModule,
+    IonicSelectableComponent,
     ReportsRoutingModule
   ]
 })
