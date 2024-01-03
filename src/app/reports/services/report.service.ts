@@ -53,6 +53,7 @@ export class ReportService {
       .from('transactions_view')
       .select('*', { count: "exact" })
       .order('trans_date', { ascending: false })
+      .order('id', { ascending: false })
       .range(startIndex, endIndex);
 
     if (request.accountIds && request.accountIds.length > 0) {

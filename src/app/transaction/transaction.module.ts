@@ -6,7 +6,7 @@ import { SaveComponent } from './save/save.component';
 import { IonicModule } from '@ionic/angular';
 import { SyncModule } from '../sync/sync.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,7 @@ import { IonicSelectableModule } from 'ionic-selectable';
     CommonModule,
     IonicModule,
     ReactiveFormsModule,
-    IonicSelectableModule,
+    IonicSelectableComponent,
     FormsModule,
     SyncModule,
     TransactionRoutingModule
