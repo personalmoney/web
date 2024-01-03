@@ -38,7 +38,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@ionic/angular": "^6.5.1",
-    "@ngxs/store": "^3.7.6",
+    "@ngxs/store": "^3.8.2",
     "@supabase/supabase-js": "^2.5.0",
     "immer": "^9.0.19",
     "ionic-selectable": "^4.9.0",
