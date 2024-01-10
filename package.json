@@ -63,7 +63,7 @@
     "@ionic/lab": "^3.2.15",
     "@types/jasmine": "^5.1.4",
     "@types/jasminewd2": "~2.0.9",
-    "@types/node": "^20.10.7",
+    "@types/node": "^20.10.8",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.18.0",
     "edit-json-file": "^1.7.0",
