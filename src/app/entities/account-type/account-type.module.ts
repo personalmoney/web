@@ -6,7 +6,7 @@ import { SaveComponent } from './save/save.component';
 import { IndexComponent } from './index/index.component';
 import { AccountTypeRoutingModule } from './account-type.routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicSelectableModule } from 'ionic-selectable';
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @NgModule({
     declarations: [
@@ -15,7 +15,7 @@ import { IonicSelectableModule } from 'ionic-selectable';
     ],
     imports: [
         CommonModule,
-        IonicSelectableModule,
+        IonicSelectableComponent,
         FormsModule,
         ReactiveFormsModule,
         IonicModule,
